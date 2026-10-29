@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { CLIENT } from './config.js'
-import { CORE, COMPLIMENTARY, LEVELS, SITES, coreKey, coreSections, coreTotal } from './services.js'
+import { COMPLIMENTARY, COMPLIMENTARY_CONDITION, CORE, LEVELS, SITES, coreKey, coreSections, coreTotal } from './services.js'
 import { calculateEstimate, formatPrice, priceLabel, pricesConfigured } from './lib/pricing.js'
 import { FORM_SUBMIT_ACTION, buildSubmission, sendSubmission } from './lib/submission.js'
 import ChecklistGroup from './components/Checklist.jsx'
@@ -173,6 +173,8 @@ export default function App() {
             </section>
           ))}
 
+          {SHOW_PRICES && <TotalSummary estimate={estimate} />}
+
           <section className="group group--notes group--final">
             <Field id="fillerName" label="Your Name" required error={nameError}>
               {(a11y) => (
@@ -221,10 +223,14 @@ function ComplimentaryBanner() {
     <div className="compbanner" role="note">
       <span className="compbanner__icon" aria-hidden="true">🎁</span>
       <div>
-        <p className="compbanner__title">Complimentary From Sonder — For Both Websites</p>
+        <p className="compbanner__title">Complimentary From Sonder — For Each Website</p>
+        <p className="compbanner__condition">{COMPLIMENTARY_CONDITION}</p>
         <ul className="compbanner__list">
           {COMPLIMENTARY.map((g) => (
-            <li key={g.name}>✓ {g.name}</li>
+            <li key={g.name}>
+              ✓ {g.name}
+              <WasFree item={g} />
+            </li>
           ))}
         </ul>
       </div>
@@ -274,6 +280,7 @@ function CorePackage({ site }) {
                     <CheckMark />
                     <span>
                       <span className="core__item">{i.name}</span>
+                      <WasFree item={i} />
                       {i.description && <span className="core__desc"> — {i.description}</span>}
                     </span>
                   </li>
@@ -290,12 +297,61 @@ function CorePackage({ site }) {
   )
 }
 
+/** A crossed-out price followed by "Complimentary", for items Sonder pays for. */
+function WasFree({ item }) {
+  if (!item.valueLabel) return null
+  return (
+    <span className="wasfree">
+      {' '}
+      <s className="wasfree__was">{item.valueLabel}</s> <span className="wasfree__now">Complimentary</span>
+    </span>
+  )
+}
+
+/** End-of-checklist total: the full value crossed out, what Sonder covers, and the price to pay. */
+function TotalSummary({ estimate }) {
+  const fullValue = estimate.oneTimeTotal + estimate.complimentaryValue
+  return (
+    <section className="summary" aria-labelledby="summary-title">
+      <h2 id="summary-title" className="summary__title">Your Total</h2>
+      <dl className="summary__rows">
+        <div className="summary__row">
+          <dt>Websites & Extras You Chose</dt>
+          <dd>{formatPrice(estimate.oneTimeTotal)}</dd>
+        </div>
+        {COMPLIMENTARY.filter((c) => c.value).map((c) => (
+          <div key={c.name} className="summary__row is-comp">
+            <dt>{c.name} × {SITES.length} Websites</dt>
+            <dd>
+              <s>{formatPrice(c.value * SITES.length)}</s> Complimentary
+            </dd>
+          </div>
+        ))}
+        <div className="summary__row summary__row--value">
+          <dt>Total Value</dt>
+          <dd><s>{formatPrice(fullValue)}</s></dd>
+        </div>
+        <div className="summary__row summary__row--save is-comp">
+          <dt>Sonder Pays for You</dt>
+          <dd>− {formatPrice(estimate.complimentaryValue)}</dd>
+        </div>
+        <div className="summary__row summary__row--pay">
+          <dt>You Pay</dt>
+          <dd>{formatPrice(estimate.oneTimeTotal)}</dd>
+        </div>
+      </dl>
+    </section>
+  )
+}
+
 function PriceBar({ estimate, count }) {
   return (
     <div className="pricebar" role="status" aria-live="polite" aria-atomic="true">
       <div className="wrap pricebar__inner">
         <div className="pricebar__left">
-          <span className="mono pricebar__label">Total price (estimate)</span>
+          <span className="mono pricebar__label">
+            You Pay <s className="pricebar__was">{formatPrice(estimate.oneTimeTotal + estimate.complimentaryValue)}</s>
+          </span>
           {/* key re-mounts the number on every change so the update animation replays */}
           <span key={estimate.oneTimeTotal} className="pricebar__amount">
             {estimate.hasFromPrices ? 'From ' : ''}{formatPrice(estimate.oneTimeTotal)}

@@ -2,6 +2,15 @@ import { describe, expect, it } from 'vitest'
 import { buildSubmission } from './submission.js'
 import { calculateEstimate } from './pricing.js'
 
+describe('complimentary value', () => {
+  it('counts the 3-year domain and hosting for both websites, without charging it', () => {
+    const est = calculateEstimate({})
+    expect(est.complimentaryValue).toBe((2100 + 30000) * 2)
+    expect(est.oneTimeTotal).toBe(70000)
+    expect(buildSubmission({}, est)['COMPLIMENTARY VALUE']).toMatch(/^₹64,200 paid by Sonder/)
+  })
+})
+
 describe('email payload', () => {
   it('always counts UI/UX design for both websites, even with nothing ticked', () => {
     const est = calculateEstimate({})

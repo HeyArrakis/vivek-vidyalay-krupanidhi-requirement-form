@@ -9,11 +9,32 @@
    Pages, basic features and complimentary items are not checkboxes: they come with core development.
    ========================================================================== */
 
-/** Complimentary from Sonder — shown in blue wherever it appears. */
+/**
+ * Complimentary from Sonder, per website, when both websites are built with us — shown in blue.
+ * `value` is what the client would otherwise pay (rupees, for the whole complimentary period);
+ * `valueLabel` is the crossed-out price shown next to it.
+ */
 export const COMPLIMENTARY = [
-  { name: 'Website Address (Domain) — Complimentary for the 1st Year', description: 'For example www.yourschool.com — we register it and pay for it' },
-  { name: 'Care & Support — Complimentary for 3 Months', description: 'We keep the website running and fix any problem after it goes live' },
+  {
+    name: 'Website Address (Domain) for 3 Years',
+    description: 'For example www.yourschool.com — Sonder registers it and pays for it',
+    value: 2100,
+    valueLabel: '₹2,100 for 3 years',
+  },
+  {
+    name: 'Cloud Hosting for 3 Years',
+    description: 'Keeps the whole website and control panel online — Sonder pays the server and cloud costs',
+    value: 30000,
+    valueLabel: '₹10,000 / year',
+  },
+  { name: 'Care & Support for 3 Months', description: 'We keep the website running and fix any problem after it goes live' },
 ]
+
+/** What the complimentary items are worth for one website. */
+export const COMPLIMENTARY_VALUE = COMPLIMENTARY.reduce((t, c) => t + (c.value ?? 0), 0)
+
+/** When the complimentary items apply. */
+export const COMPLIMENTARY_CONDITION = 'When you build both websites with us'
 
 /** Website look & design — the base of every page, so every website must have it. */
 const design = (site) => ({

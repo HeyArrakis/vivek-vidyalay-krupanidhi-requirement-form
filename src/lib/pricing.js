@@ -1,5 +1,5 @@
 import { CURRENCY, PRICING } from '../config.js'
-import { ALL_GROUPS, SITES, coreKey } from '../services.js'
+import { ALL_GROUPS, COMPLIMENTARY_VALUE, SITES, coreKey } from '../services.js'
 
 const formatter = new Intl.NumberFormat(CURRENCY.locale, {
   style: 'currency',
@@ -67,6 +67,8 @@ export function calculateEstimate(selection, { pricing = PRICING, groups = ALL_G
     addOnsTotal: sum(oneTime),
     oneTimeTotal: coreAmount + sum(oneTime),
     monthlyTotal: sum(monthly),
+    // What Sonder pays for (domain, hosting) across every website — shown crossed out, never charged.
+    complimentaryValue: COMPLIMENTARY_VALUE * sites.length,
     hasFromPrices: priced.some((l) => l.type === 'from') || cores.some((c) => c.type === 'from'),
   }
 }

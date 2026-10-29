@@ -7,7 +7,7 @@ A simple, single-page **website requirement checklist** prepared by
 2. **Tuition classes website — Krupanidhi English Academy**
 
 Written for a non-technical reader: plain words, icons and big counters instead of long text.
-A blue **Complimentary** banner sits at the top (domain for the 1st year, care & support for
+A blue **Complimentary** banner sits at the top (per website, when both are built: domain and cloud hosting for 3 years, shown as crossed-out ₹2,100 and ₹10,000 / year, plus care & support for
 3 months, for both websites).
 
 Each website then has, in this order:
@@ -20,6 +20,8 @@ Each website then has, in this order:
 4. **C. More features — price after a quick talk** — everything quoted separately, last.
 
 The total bar is always visible: ₹70,000 to start, ₹90,000 with every priced extra on both websites.
+A "Your Total" summary at the end shows the full value crossed out (including ₹64,200 of domain and
+hosting Sonder pays for), then "You Pay".
 
 ---
 

@@ -277,7 +277,7 @@ body:has(.pricebar) { padding-bottom: calc(84px + env(safe-area-inset-bottom)); 
 .group__name { flex: 1; min-width: 0; font-size: inherit; font-weight: inherit; }
 .group__intro { margin-top: 10px; font-size: 16px; color: var(--muted); }
 .site > .group--notes { margin-top: 36px; }
-.group--final { margin-top: clamp(56px, 8vw, 80px); border-top-width: 3px; }
+.group--final { margin-top: 40px; border-top-width: 3px; }
 
 .success__site { margin-top: 32px; }
 .success__site .success__list { margin-top: 12px; }
@@ -386,4 +386,32 @@ body:has(.pricebar) { padding-bottom: calc(84px + env(safe-area-inset-bottom)); 
   .counts { grid-template-columns: repeat(2, 1fr); padding: 12px 16px 0; }
   .addall { width: 100%; }
   .compbanner { padding: 14px; }
+}
+
+/* Crossed-out price + Complimentary */
+.wasfree { white-space: nowrap; }
+.wasfree__was { color: var(--muted-2); font-weight: 500; }
+.wasfree__now { font-weight: 700; color: var(--comp-blue); }
+.compbanner__condition { margin-top: 2px; font-size: 16px; font-weight: 600; opacity: 0.85; }
+.compbanner__list .wasfree__was { color: var(--comp-blue); opacity: 0.6; }
+
+/* End-of-checklist total */
+.summary { margin-top: clamp(48px, 7vw, 72px); padding: 22px; background: var(--surface); border: 2px solid var(--ink); }
+.summary__title { font-size: clamp(26px, 4vw, 32px); font-weight: 600; letter-spacing: -0.02em; }
+.summary__rows { margin: 14px 0 0; display: grid; }
+.summary__row { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--rule); font-size: 18px; }
+.summary__row dt { font-weight: 600; }
+.summary__row dd { margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; }
+.summary__row.is-comp, .summary__row.is-comp dd { color: var(--comp-blue); }
+.summary__row.is-comp s { opacity: 0.6; font-weight: 500; }
+.summary__row--value dd s { color: var(--muted-2); font-size: 22px; }
+.summary__row--pay { border-bottom: 0; padding-top: 14px; font-size: 22px; }
+.summary__row--pay dd { font-size: clamp(30px, 5vw, 38px); color: var(--orange-ink); letter-spacing: -0.02em; }
+.pricebar__was { margin-left: 6px; color: rgba(244, 242, 238, 0.5); text-transform: none; }
+
+@media (max-width: 600px) {
+  .summary { padding: 16px; }
+  .summary__row { font-size: 16.5px; }
+  .summary__row dd { white-space: normal; }
+  .wasfree { white-space: normal; }
 }
