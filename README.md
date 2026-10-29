@@ -6,14 +6,20 @@ A simple, single-page **website requirement checklist** prepared by
 1. **School website — Vivek Vidyalay**
 2. **Tuition classes website — Krupanidhi English Academy**
 
-Each website starts with its own **Core Website Development (₹30,000)** block and a "See everything
-included" dropdown: that website's pages, its basic features, technical setup, launch and 3 months
-of support.
+Written for a non-technical reader: plain words, icons and big counters instead of long text.
+A blue **free gifts** banner sits at the top (free domain for the 1st year, free care & support for
+3 months, for both websites).
 
-Below the core block, each website has: **A** Features & Modules (Basic included in core; Standard, Advanced
-and Custom bundles quoted separately), **B** Branding, Design & Content (UI/UX always included),
-**B** holds the required Website UI/UX Design (₹5,000 per website, always counted). **C** Online Growth, **D** After Launch. The client ticks any extras, optionally adds a note per
-website, and submits.
+Each website then has, in this order:
+
+1. **Your Complete Website — ₹30,000**: counters (pages, ready-made features, setup jobs, free
+   gifts) and a "Tap to see the full list" dropdown.
+2. **A. Must have** — Website Look & Design, ₹5,000, always ticked.
+3. **B. Recommended extras** — Logo & colours ₹5,000, writing ₹3,000, Google Maps ₹2,000, with an
+   "Add all 3" button.
+4. **C. More features — price after a quick talk** — everything quoted separately, last.
+
+The total bar is always visible: ₹70,000 to start, ₹90,000 with every priced extra on both websites.
 
 ---
 
@@ -61,8 +67,6 @@ export const PRICING = {
   school_branding: { amount: 5000 },
   school_contentWriting: { amount: 3000 },
   school_localSEO: { amount: 2000 },
-  school_advancedSEO: { amount: null, label: 'Priced on your goals' },
-  school_supportAfter3Months: { amount: null, label: 'Quoted separately' },
   // …same keys with the tuition_ prefix
 }
 ```

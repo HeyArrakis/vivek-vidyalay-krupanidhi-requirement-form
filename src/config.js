@@ -36,7 +36,7 @@ export const CURRENCY = {
  *   label  — text shown when there is no amount
  *   rates  — optional per-unit rates listed under the service
  *
- * Standard / Advanced / Custom feature bundles without an entry show "Quoted separately".
+ * "Price after a talk" items (those with a `level`) without an entry are quoted separately.
  */
 export const PRICING = {
   // Core website development, per website (always included, not a checkbox):
@@ -57,10 +57,5 @@ export const PRICING = {
   // Online growth (per website)
   school_localSEO: { amount: 2000 },
   tuition_localSEO: { amount: 2000 },
-  school_advancedSEO: { amount: null, label: 'Priced on your goals' },
-  tuition_advancedSEO: { amount: null, label: 'Priced on your goals' },
 
-  // After launch
-  school_supportAfter3Months: { amount: null, label: 'Quoted separately' },
-  tuition_supportAfter3Months: { amount: null, label: 'Quoted separately' },
 }

@@ -32,7 +32,7 @@ export function buildSubmission(values, estimate) {
     const head = `${site.number}. ${site.kind.toUpperCase()} — ${site.name}`
     p[head] = extras ? `${extras} extras ticked` : 'Core + required services only — no extras ticked'
     const core = priceLabel(coreKey(site.id))
-    p[`${site.kind} — ${CORE.title}`] = `Included${core ? ` — ${core}` : ''} (all listed pages, basic features, technical setup, launch, 3 months support)`
+    p[`${site.kind} — ${CORE.title}`] = `Included${core ? ` — ${core}` : ''} (all listed pages, basic features, setup & launch; gifts: free domain for the 1st year, free care & support for 3 months)`
     for (const line of lines) {
       p[`${site.kind} — ${line.name}`] = `${line.required ? 'Required' : 'Yes'}${priceText(line)}`
     }

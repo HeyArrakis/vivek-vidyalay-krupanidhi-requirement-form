@@ -13,6 +13,8 @@
   --orange: #ff3c00;
   --orange-ink: #c42e00;
   --error: #b42318;
+  --gift: #1d4ed8;
+  --gift-bg: #eef3ff;
   --font: 'Host Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
   --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
   --pad-x: clamp(16px, 5vw, 48px);
@@ -26,8 +28,8 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font);
-  font-size: 18px;
-  line-height: 1.55;
+  font-size: 19px;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
@@ -101,8 +103,8 @@ button, input, textarea { font: inherit; color: inherit; }
 }
 .row:hover { background: rgba(255, 255, 255, 0.6); }
 .row__text { display: flex; flex-direction: column; flex: 1; min-width: 0; }
-.row__title { font-size: 20px; font-weight: 600; line-height: 1.35; }
-.row__desc { margin-top: 4px; font-size: 17px; color: var(--muted); }
+.row__title { font-size: 21px; font-weight: 600; line-height: 1.35; }
+.row__desc { margin-top: 4px; font-size: 18px; color: var(--muted); }
 .row__extras { display: grid; gap: 4px; margin-top: 8px; }
 .row__includes { display: grid; gap: 3px; }
 .row__include { font-size: 16.5px; line-height: 1.5; color: var(--ink); padding-left: 20px; position: relative; }
@@ -120,11 +122,11 @@ button, input, textarea { font: inherit; color: inherit; }
 
 /* Checkbox */
 .box {
-  flex: none; display: grid; place-items: center; width: 28px; height: 28px; margin-top: 1px;
+  flex: none; display: grid; place-items: center; width: 32px; height: 32px; margin-top: 0;
   border: 1.5px solid var(--rule-strong); border-radius: 2px; background: var(--surface); color: #fff;
   transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
 }
-.checkmark { width: 18px; height: 18px; display: block; }
+.checkmark { width: 20px; height: 20px; display: block; }
 .box .checkmark path { stroke-dasharray: 16; stroke-dashoffset: 16; transition: stroke-dashoffset 0.25s var(--ease); }
 .box.is-checked { background: var(--orange); border-color: var(--orange); }
 .box.is-checked .checkmark path { stroke-dashoffset: 0; }
@@ -194,7 +196,7 @@ input:focus-visible + .box { outline: 2px solid var(--orange); outline-offset: 3
 @media (max-width: 600px) {
   .row__title { font-size: 19px; }
   .row { flex-wrap: wrap; }
-  .row > .row__price { flex-basis: 100%; padding: 6px 0 0 42px; }
+  .row > .row__price { flex-basis: 100%; padding: 6px 0 0 46px; }
   .submit__row .btn { width: 100%; }
 }
 
@@ -322,9 +324,7 @@ body:has(.pricebar) { padding-bottom: calc(84px + env(safe-area-inset-bottom)); 
 .comp__list strong { font-weight: 600; }
 
 .tier { margin-top: 24px; }
-.tier__head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 16px; padding-bottom: 8px; border-bottom: 1px solid var(--rule-strong); }
-.tier__title { font-size: 18px; font-weight: 600; }
-.tier__label { color: var(--orange-ink); text-transform: none; letter-spacing: 0.02em; font-weight: 700; }
+.tier__head { padding-bottom: 8px; border-bottom: 1px solid var(--rule-strong); }
 
 
 @media (max-width: 600px) {
@@ -340,4 +340,56 @@ body:has(.pricebar) { padding-bottom: calc(84px + env(safe-area-inset-bottom)); 
 .row__required {
   display: inline-block; margin-left: 10px; padding: 2px 7px; vertical-align: 3px;
   background: var(--ink); color: var(--paper); font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+}
+
+/* ---- Easy-reading additions ---- */
+.row__icon { margin-right: 8px; }
+.group__intro { font-size: 18px; }
+
+/* Free gifts — always blue */
+.giftbanner {
+  display: flex; align-items: flex-start; gap: 14px; margin-top: 24px; padding: 16px 18px;
+  background: var(--gift-bg); border: 2px solid var(--gift); color: var(--gift);
+}
+.giftbanner__icon { font-size: 34px; line-height: 1; }
+.giftbanner__title { font-size: 20px; font-weight: 700; }
+.giftbanner__list { margin-top: 4px; display: grid; gap: 2px; font-size: 18px; font-weight: 600; }
+
+/* 1-2-3 steps */
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 22px 0 0; padding: 0; list-style: none; }
+.steps li { display: flex; align-items: center; gap: 10px; padding: 12px; background: var(--surface); border: 1px solid var(--rule-strong); font-size: 17px; font-weight: 600; line-height: 1.3; }
+.steps__num { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 50%; background: var(--orange); color: #fff; font-weight: 700; }
+.steps__tick { color: var(--orange-ink); }
+
+/* Counters on the core block */
+.counts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 12px 22px 0; list-style: none; }
+.counts__item { display: grid; justify-items: center; gap: 2px; padding: 14px 8px; background: var(--paper); text-align: center; }
+.counts__icon { font-size: 24px; line-height: 1.2; }
+.counts__value { font-size: 34px; font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; }
+.counts__label { font-size: 15px; font-weight: 600; color: var(--muted); line-height: 1.25; }
+.counts__item.is-gift { background: var(--gift-bg); color: var(--gift); }
+.counts__item.is-gift .counts__label { color: var(--gift); }
+.core__summary strong { color: var(--ink); }
+.core__toggle { font-size: 18px; text-transform: none; letter-spacing: 0; font-family: var(--font); }
+.core__section-title { font-family: var(--font); font-size: 18px; text-transform: none; letter-spacing: 0; }
+.core__section.is-gift .core__section-title, .core__section.is-gift .core__list li, .core__section.is-gift .core__desc { color: var(--gift); }
+.core__section.is-gift .checkmark { color: var(--gift); }
+.core__list li { font-size: 17.5px; }
+
+/* Recommended extras + add-all */
+.group--recommended .group__title { border-bottom-color: var(--orange); }
+.addall {
+  margin-top: 14px; min-height: 52px; padding: 12px 22px; border: 2px solid var(--orange); border-radius: 2px;
+  background: var(--surface); color: var(--orange-ink); font-size: 18px; font-weight: 700; cursor: pointer;
+  transition: background 0.2s var(--ease), color 0.2s var(--ease);
+}
+.addall:hover, .addall.is-on { background: var(--orange); color: #fff; }
+
+.tier__head { font-size: 19px; font-weight: 700; }
+
+@media (max-width: 600px) {
+  .steps { grid-template-columns: 1fr; }
+  .counts { grid-template-columns: repeat(2, 1fr); padding: 12px 16px 0; }
+  .addall { width: 100%; }
+  .giftbanner { padding: 14px; }
 }

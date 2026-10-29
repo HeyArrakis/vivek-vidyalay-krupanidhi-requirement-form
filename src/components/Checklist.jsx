@@ -32,7 +32,7 @@ function Extras({ group }) {
 /** One service = one checkbox. Grouped services list what they include and are priced once. */
 export default function ChecklistGroup({ group, checked, onToggle }) {
   const id = `svc-${group.id}`
-  // Bundles sit under a "Quoted separately" heading, so they only show a label once priced.
+  // "Price after a talk" items sit under that heading, so they only show a label once priced.
   const label = group.level && !PRICING[group.id] ? '' : priceLabel(group.id)
   // A required service is always ticked and can't be unticked.
   const on = group.required || checked
@@ -51,8 +51,9 @@ export default function ChecklistGroup({ group, checked, onToggle }) {
         <Box checked={on} />
         <span className="row__text">
           <span className="row__title">
+            {group.icon && <span className="row__icon" aria-hidden="true">{group.icon}</span>}
             {group.name}
-            {group.required && <span className="row__required mono">Required</span>}
+            {group.required && <span className="row__required mono">Must have</span>}
           </span>
           <span className="row__desc">{group.description}</span>
           <Extras group={group} />
