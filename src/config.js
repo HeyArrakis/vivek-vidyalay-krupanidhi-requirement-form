@@ -41,7 +41,7 @@ export const CURRENCY = {
 export const PRICING = {
   // Core website development for BOTH websites (always included, not a checkbox):
   // all listed pages, basic features, technical setup, launch, 3 months support.
-  coreWebsite: { amount: 25000 },
+  coreWebsite: { amount: 85000 },
 
   // Website UI/UX Design — required for every website, always counted (not core)
   school_uiux: { amount: 5000 },

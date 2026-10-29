@@ -6,7 +6,7 @@ A simple, single-page **website requirement checklist** prepared by
 1. **School website — Vivek Vidyalay**
 2. **Tuition classes website — Krupanidhi English Academy**
 
-At the top, **Core Website Development (₹25,000, both websites)** has a "See everything included"
+At the top, **Core Website Development (₹85,000, both websites)** has a "See everything included"
 dropdown: UI/UX design, every listed page and the basic features of each website, plus technical
 setup, launch and 3 months of support.
 
@@ -56,7 +56,7 @@ in the page source.
 
 ```js
 export const PRICING = {
-  coreWebsite: { amount: 25000 },                       // both websites
+  coreWebsite: { amount: 85000 },                       // both websites
   school_branding: { amount: 3000 },                    // per website
   school_contentWriting: { amount: null, label: '₹200 / section' },
   school_localSEO: { amount: 1000 },

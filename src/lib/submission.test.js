@@ -5,9 +5,9 @@ import { calculateEstimate } from './pricing.js'
 describe('email payload', () => {
   it('always counts UI/UX design for both websites, even with nothing ticked', () => {
     const est = calculateEstimate({})
-    expect(est.oneTimeTotal).toBe(25000 + 5000 + 5000)
+    expect(est.oneTimeTotal).toBe(85000 + 5000 + 5000)
     expect(est.extras).toHaveLength(0)
-    expect(calculateEstimate({ school_uiux: false }).oneTimeTotal).toBe(35000)
+    expect(calculateEstimate({ school_uiux: false }).oneTimeTotal).toBe(95000)
   })
 
   it('lists core first, then each website’s extras and notes', () => {
@@ -15,7 +15,7 @@ describe('email payload', () => {
     const p = buildSubmission({ name: 'Asha Mehta', notes: { tuition: 'Two branches' } }, est)
     expect(p.CLIENT).toBe('Vivek Vidyalay & Krupanidhi English Academy')
     expect(p['FILLED BY']).toBe('Asha Mehta')
-    expect(p['CORE — Core Website Development']).toMatch(/^Included — ₹25,000/)
+    expect(p['CORE — Core Website Development']).toMatch(/^Included — ₹85,000/)
     expect(p['1. SCHOOL WEBSITE — Vivek Vidyalay']).toBe('2 extras ticked')
     expect(p['School Website — Website UI/UX Design']).toBe('Required — ₹5,000')
     expect(p['Tuition Classes Website — Website UI/UX Design']).toBe('Required — ₹5,000')
@@ -38,8 +38,8 @@ describe('email payload', () => {
 
   it('totals core plus each ticked priced service', () => {
     const est = calculateEstimate({ school_branding: true, school_localSEO: true, school_contentWriting: true, tuition_learningPortal: true })
-    expect(est.oneTimeTotal).toBe(25000 + 5000 + 5000 + 3000 + 1000)
-    expect(buildSubmission({}, est)['ESTIMATED INVESTMENT']).toMatch(/^₹39,000 \(incl\. core development ₹25,000/)
+    expect(est.oneTimeTotal).toBe(85000 + 5000 + 5000 + 3000 + 1000)
+    expect(buildSubmission({}, est)['ESTIMATED INVESTMENT']).toMatch(/^₹99,000 \(incl\. core development ₹85,000/)
   })
 })
 
