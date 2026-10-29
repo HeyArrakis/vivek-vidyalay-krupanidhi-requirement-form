@@ -17,15 +17,15 @@
 export const COMPLIMENTARY = [
   {
     name: 'Website Address (Domain) for 3 Years',
-    description: 'For example www.yourschool.com — Sonder registers it and pays for it',
+    description: 'For example www.yourschool.com — we register it and pay for it',
     value: 2100,
     valueLabel: '₹2,100 for 3 years',
   },
   {
-    name: 'Cloud Hosting for 3 Years',
-    description: 'Keeps the whole website and control panel online — Sonder pays the server and cloud costs',
-    value: 30000,
-    valueLabel: '₹10,000 / year',
+    name: 'Cloud Hosting for 1 Year',
+    description: 'Keeps the whole website and control panel online — we pay the server and cloud costs',
+    value: 10000,
+    valueLabel: '₹10,000 for 1 year',
   },
   { name: 'Care & Support for 3 Months', description: 'We keep the website running and fix any problem after it goes live' },
 ]
@@ -99,6 +99,7 @@ export const SITES = [
       { name: 'English, Gujarati & Hindi', description: 'Parents can read the website in their language' },
       { name: 'Facebook, Instagram & YouTube', description: 'Your social media shown on the website' },
       { name: 'Admission Season Pages', description: 'Your staff can make a new page for each admission season' },
+      { name: 'Forms & Documents to Download', description: 'Your staff upload admission forms, syllabus, timetables and calendars; parents download them' },
     ],
     sections: [
       {
@@ -142,7 +143,7 @@ export const SITES = [
         title: 'More Features — Price After a Quick Talk',
         intro: QUOTED_INTRO,
         groups: [
-          { id: 'school_eventsDocuments', level: 'Standard', icon: '📅', name: 'Event Sign-ups & Downloads', description: 'Parents sign up for school events and download forms from the website.' },
+          { id: 'school_eventsDocuments', level: 'Standard', icon: '📅', name: 'Event Sign-ups', description: 'Parents sign up for school events from the website.' },
           { id: 'school_adminDashboard', level: 'Standard', icon: '📥', name: 'One Inbox for All Enquiries', description: 'See every message and admission enquiry in one place.' },
           { id: 'school_onlineAdmissions', level: 'Advanced', icon: '📝', name: 'Full Admission Form Online', description: 'Parents fill the complete admission form and upload documents from home.' },
           { id: 'school_portals', level: 'Advanced', icon: '👨‍👩‍👧', name: 'Login for Parents, Students & Teachers', description: 'Each person gets their own login to see homework and class updates.' },

@@ -15,6 +15,7 @@
   --error: #b42318;
   --comp-blue: #1d4ed8;
   --comp-bg: #eef3ff;
+  --save: #15803d;
   --font: 'Host Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
   --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
   --pad-x: clamp(16px, 5vw, 48px);
@@ -404,6 +405,8 @@ body:has(.pricebar) { padding-bottom: calc(84px + env(safe-area-inset-bottom)); 
 .summary__row dd { margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; }
 .summary__row.is-comp, .summary__row.is-comp dd { color: var(--comp-blue); }
 .summary__row.is-comp s { opacity: 0.6; font-weight: 500; }
+.summary__row.is-save, .summary__row.is-save dd { color: var(--save); }
+.summary__row dd.nowrap { white-space: nowrap; }
 .summary__row--value dd s { color: var(--muted-2); font-size: 22px; }
 .summary__row--pay { border-bottom: 0; padding-top: 14px; font-size: 22px; }
 .summary__row--pay dd { font-size: clamp(30px, 5vw, 38px); color: var(--orange-ink); letter-spacing: -0.02em; }

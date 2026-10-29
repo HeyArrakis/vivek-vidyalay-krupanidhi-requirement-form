@@ -3,11 +3,18 @@ import { buildSubmission } from './submission.js'
 import { calculateEstimate } from './pricing.js'
 
 describe('complimentary value', () => {
-  it('counts the 3-year domain and hosting for both websites, without charging it', () => {
+  it('counts the 3-year domain and 1-year hosting for both websites, without charging it', () => {
     const est = calculateEstimate({})
-    expect(est.complimentaryValue).toBe((2100 + 30000) * 2)
+    expect(est.complimentaryValue).toBe((2100 + 10000) * 2)
     expect(est.oneTimeTotal).toBe(70000)
-    expect(buildSubmission({}, est)['COMPLIMENTARY VALUE']).toMatch(/^₹64,200 paid by Sonder/)
+    expect(buildSubmission({}, est)['COMPLIMENTARY VALUE']).toMatch(/^₹24,200 paid by us/)
+  })
+
+  it('shows ₹5,000 already reduced from the usual market price', () => {
+    const est = calculateEstimate({ school_branding: true })
+    expect(est.reduction).toBe(5000)
+    expect(est.marketTotal).toBe(est.oneTimeTotal + 5000)
+    expect(buildSubmission({}, est)['ALREADY REDUCED']).toBe('₹5,000 below the usual market price of ₹80,000')
   })
 })
 
