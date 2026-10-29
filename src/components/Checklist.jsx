@@ -32,7 +32,8 @@ function Extras({ group }) {
 /** One service = one checkbox. Grouped services list what they include and are priced once. */
 export default function ChecklistGroup({ group, checked, onToggle }) {
   const id = `svc-${group.id}`
-  const label = priceLabel(group.id)
+  // Bundles sit under a "Quoted separately" heading, so they only show a label once priced.
+  const label = group.level && !PRICING[group.id] ? '' : priceLabel(group.id)
   return (
     <li>
       <label className={`row ${checked ? 'is-checked' : ''}`} htmlFor={id}>
@@ -44,11 +45,7 @@ export default function ChecklistGroup({ group, checked, onToggle }) {
           <Extras group={group} />
           {group.bonus && <span className="row__bonus mono">+ {group.bonus}</span>}
         </span>
-        {label ? (
-          <span className="row__price mono">{label}</span>
-        ) : (
-          group.level && <span className={`row__level mono row__level--${group.level.toLowerCase()}`}>{group.level}</span>
-        )}
+        {label && <span className="row__price mono">{label}</span>}
       </label>
     </li>
   )

@@ -6,16 +6,14 @@ A simple, single-page **website requirement checklist** prepared by
 1. **School website — Vivek Vidyalay**
 2. **Tuition classes website — Krupanidhi English Academy**
 
-Each website has its own section with sub-sections: **A** Website Pages, **B** Features &
-Modules, **C** Branding, Design & Content, **D** Online Growth, **E** After Launch.
-The client ticks the services they want for each website, optionally adds a note per website, and submits.
-Prices and an estimated total appear only once prices are filled in (see below). The completed form is emailed to Sonder via
-[FormSubmit](https://formsubmit.co) — there is no backend.
+At the top, **Core Website Development (₹25,000, both websites)** has a "See everything included"
+dropdown: UI/UX design, every listed page and the basic features of each website, plus technical
+setup, launch and 6 months of support.
 
-- React 19 + Vite 8, plain CSS (Sonder light design tokens), no UI framework
-- Optional group-based pricing from one config object (hidden until set)
-- One checkbox per service, accessible custom checkboxes, works on mobile
-- Deploys to GitHub Pages with the included GitHub Actions workflow
+Below it, each website has: **A** Features & Modules (Basic included in core; Standard, Advanced
+and Custom bundles quoted separately), **B** Branding, Design & Content (UI/UX always included),
+**C** Online Growth, **D** After Launch. The client ticks any extras, optionally adds a note per
+website, and submits.
 
 ---
 
@@ -56,17 +54,15 @@ in the page source.
 
 ### 2. Prices
 
-Prices are **not set yet**, so the page is a plain checklist (no prices, totals or price bar).
-Feature rows show a complexity tag instead (Basic / Standard / Advanced / Custom).
-Add amounts in `PRICING` once they're confirmed:
-
 ```js
 export const PRICING = {
-  schoolWebsite: { amount: 30000 },          // base school website
-  tuitionWebsite: { amount: 20000 },         // base tuition classes website
-  school_page_gallery: { amount: 1500 },
-  school_feePayment: { amount: 12000, type: 'from' },
-  tuition_lms: { amount: null, label: 'Quoted separately' },
+  coreWebsite: { amount: 25000 },                       // both websites
+  school_branding: { amount: 3000 },                    // per website
+  school_contentWriting: { amount: null, label: '₹200 / section' },
+  school_localSEO: { amount: 1000 },
+  school_advancedSEO: { amount: null, label: 'Priced on your goals' },
+  school_supportAfter6Months: { amount: null, label: 'Quoted separately' },
+  // …same keys with the tuition_ prefix
 }
 ```
 
@@ -75,15 +71,15 @@ export const PRICING = {
 | `amount` | Price in rupees, counted in the estimate when ticked. `null` = not counted. |
 | `label`  | Text shown instead of a price when `amount` is `null` |
 | `type`   | Optional `'from'` to show "From ₹4,000" |
-| `rates`  | Optional per-unit rates listed under the service |
 
-The estimate = both base websites + each ticked priced service (once per service).
-As soon as any amount is set, prices and the fixed price bar appear.
-`src/lib/pricing.test.js` and `src/lib/submission.test.js` cover this.
+The estimate = core development + each ticked priced service. Standard / Advanced / Custom
+feature bundles have no entry, so they show under a "Quoted separately" heading and are not
+counted; give one an `amount` to price it. `src/lib/pricing.test.js` and
+`src/lib/submission.test.js` cover this.
 
 ### 3. Services & copy
 
-Both websites, their sub-sections, every checklist item and the "already included" line are in
+The core package (`CORE`), each website's pages and basic features, and every selectable bundle are in
 `src/services.js`. Service ids are prefixed `school_` or `tuition_` so they stay unique; each id
 is the key used in `PRICING`.
 

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { CLIENT } from './config.js'
-import { SITES } from './services.js'
-import { calculateEstimate, coreKey, formatPrice, priceLabel, pricesConfigured } from './lib/pricing.js'
+import { CORE, LEVELS, SITES, coreSections } from './services.js'
+import { calculateEstimate, formatPrice, priceLabel, pricesConfigured } from './lib/pricing.js'
 import { FORM_SUBMIT_ACTION, buildSubmission, sendSubmission } from './lib/submission.js'
 import ChecklistGroup from './components/Checklist.jsx'
 import { CheckMark, Field } from './components/ui.jsx'
@@ -25,17 +25,6 @@ export default function App() {
     setSubmitError('')
   }
 
-  /** Ticks every service in a section, or clears them all if they're already ticked. */
-  const toggleAll = (groups) => {
-    setSelection((s) => {
-      const allOn = groups.every((g) => s[g.id])
-      return { ...s, ...Object.fromEntries(groups.map((g) => [g.id, !allOn])) }
-    })
-    setSubmitError('')
-  }
-
-  const hasNotes = Object.values(notes).some((n) => n.trim())
-
   // Sending runs in the background: the thank-you page shows instantly and reports
   // delivery (with a retry) once FormSubmit answers.
   const deliver = (payload) => {
@@ -56,10 +45,6 @@ export default function App() {
       const el = document.getElementById('fillerName')
       el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
       el?.focus({ preventScroll: true })
-      return
-    }
-    if (estimate.lines.length === 0 && !hasNotes) {
-      setSubmitError('Please tick at least one service (or add a note) before submitting.')
       return
     }
     const payload = buildSubmission({ name, notes }, estimate)
@@ -83,7 +68,10 @@ export default function App() {
         <div className="intro">
           <p className="mono muted">{CLIENT.name} × Sonder</p>
           <h1 className="intro__title">Website requirement checklist</h1>
-          <p className="intro__copy">One checklist for both of your websites. Tick everything you’d like included in each.</p>
+          <p className="intro__copy">
+            Core development covers both websites. Below it, tick any extra features or services you’d like for each website.
+          </p>
+          <CorePackage />
           <nav className="sites" aria-label="Websites in this checklist">
             {SITES.map((site) => (
               <a key={site.id} className="sites__card" href={`#site-${site.id}`}>
@@ -92,7 +80,7 @@ export default function App() {
                   <span className="mono muted">{site.kind}</span>
                   <span className="sites__name">{site.name}</span>
                 </span>
-                <span className="mono sites__count">{siteCount(site.id)} ticked</span>
+                <span className="mono sites__count">{siteCount(site.id)} extras ticked</span>
               </a>
             ))}
           </nav>
@@ -109,45 +97,54 @@ export default function App() {
                   <p className="site__objective">{site.objective}</p>
                 </div>
               </div>
-              <div className="intro__note">
-                {priceLabel(coreKey(site.id)) && (
-                  <p className="intro__core">
-                    <span>{site.kind}</span>
-                    <span className="mono">{priceLabel(coreKey(site.id))}</span>
-                  </p>
-                )}
-                <p>{site.includedNote}</p>
-              </div>
+              <p className="site__core">
+                <CheckMark /> {site.pages.length} website pages, {site.basic.length} basic features and the UI/UX design are included in core
+                development.
+              </p>
 
               {site.sections.map((sec) => (
                 <section key={sec.id} className="group" aria-labelledby={`grp-${sec.id}`}>
                   <div className="group__title">
                     <span className="mono group__letter" aria-hidden="true">{sec.letter}</span>
                     <h3 id={`grp-${sec.id}`} className="group__name">{sec.title}</h3>
-                    {sec.bulk && (
-                      <button type="button" className="group__bulk mono" onClick={() => toggleAll(sec.groups)}>
-                        {sec.groups.every((g) => selection[g.id]) ? 'Clear all' : 'Tick all'}
-                      </button>
-                    )}
                   </div>
                   {sec.intro && <p className="group__intro">{sec.intro}</p>}
-                  {sec.complimentary && (
-                    <div className="comp">
-                      <p className="comp__head">
-                        <span className="row__title">{sec.complimentary.title}</span>
-                        <span className="comp__tag mono">{sec.complimentary.label}</span>
-                      </p>
-                      <p className="row__desc">{sec.complimentary.text}</p>
-                      {sec.complimentary.notes.map((n) => (
-                        <p key={n} className="row__note">{n}</p>
-                      ))}
-                    </div>
+                  {sec.included && (
+                    <Included title={sec.included.title} label={sec.included.label} items={site[sec.included.items]} />
                   )}
-                  <ul className="list">
-                    {sec.groups.map((g) => (
-                      <ChecklistGroup key={g.id} group={g} checked={!!selection[g.id]} onToggle={toggle} />
-                    ))}
-                  </ul>
+                  {sec.complimentary && (
+                    <Included
+                      title={sec.complimentary.title}
+                      label={sec.complimentary.label}
+                      text={sec.complimentary.text}
+                      notes={sec.complimentary.notes}
+                    />
+                  )}
+                  {sec.groups.some((g) => g.level) ? (
+                    LEVELS.map(({ level, title, label }) => {
+                      const groups = sec.groups.filter((g) => g.level === level)
+                      if (!groups.length) return null
+                      return (
+                        <div key={level} className="tier">
+                          <p className="tier__head">
+                            <span className="tier__title">{title}</span>
+                            <span className="mono tier__label">{label}</span>
+                          </p>
+                          <ul className="list">
+                            {groups.map((g) => (
+                              <ChecklistGroup key={g.id} group={g} checked={!!selection[g.id]} onToggle={toggle} />
+                            ))}
+                          </ul>
+                        </div>
+                      )
+                    })
+                  ) : (
+                    <ul className="list">
+                      {sec.groups.map((g) => (
+                        <ChecklistGroup key={g.id} group={g} checked={!!selection[g.id]} onToggle={toggle} />
+                      ))}
+                    </ul>
+                  )}
                 </section>
               ))}
 
@@ -192,15 +189,15 @@ export default function App() {
           <div className="submit">
             {SHOW_PRICES && (
               <p className="submit__note">
-                This is an initial estimate based on your selected requirements. Final pricing will be confirmed after
-                reviewing your requirements.
+                This is an initial estimate based on your selected requirements. Services marked “Quoted separately” are not
+                included in the total. Final pricing will be confirmed after reviewing your requirements.
               </p>
             )}
             <div className="submit__row">
               <button type="submit" className="btn btn--primary">
                 Submit checklist <span aria-hidden="true">→</span>
               </button>
-              <span className="mono muted">{count} {count === 1 ? 'service' : 'services'} ticked</span>
+              <span className="mono muted">Core + {count} {count === 1 ? 'extra' : 'extras'} ticked</span>
             </div>
             <div aria-live="assertive">
               {submitError && <p className="form-error">{submitError}</p>}
@@ -211,6 +208,75 @@ export default function App() {
       <Footer />
       {SHOW_PRICES && <PriceBar estimate={estimate} count={count} />}
     </>
+  )
+}
+
+/** The core package: price up front, everything it covers in an expandable list. */
+function CorePackage() {
+  return (
+    <div className="core">
+      <div className="core__head">
+        <div>
+          <p className="mono core__kicker">Included</p>
+          <h2 className="core__title">{CORE.title}</h2>
+          <p className="core__subtitle">{CORE.subtitle}</p>
+        </div>
+        {priceLabel('coreWebsite') && <p className="core__price">{priceLabel('coreWebsite')}</p>}
+      </div>
+      <p className="core__summary">{CORE.summary}</p>
+      <details className="core__details">
+        <summary className="core__toggle mono">
+          <span className="core__toggle-open">See everything included</span>
+          <span className="core__toggle-close">Hide the list</span>
+        </summary>
+        <div className="core__body">
+          {coreSections().map((sec) => (
+            <div key={sec.title} className="core__section">
+              <p className="core__section-title mono">{sec.title}</p>
+              <ul className="core__list">
+                {sec.items.map((i) => (
+                  <li key={i.name}>
+                    <CheckMark />
+                    <span>
+                      <span className="core__item">{i.name}</span>
+                      {i.description && <span className="core__desc"> — {i.description}</span>}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              {sec.notes?.map((n) => (
+                <p key={n} className="row__note">{n}</p>
+              ))}
+            </div>
+          ))}
+        </div>
+      </details>
+    </div>
+  )
+}
+
+/** A non-selectable block: something already included or complimentary. */
+function Included({ title, label, text, items, notes = [] }) {
+  return (
+    <div className="comp">
+      <p className="comp__head">
+        <span className="row__title">{title}</span>
+        <span className="comp__tag mono">{label}</span>
+      </p>
+      {text && <p className="row__desc">{text}</p>}
+      {items && (
+        <ul className="comp__list">
+          {items.map((i) => (
+            <li key={i.name} className="row__include">
+              <strong>{i.name}</strong> — {i.description}
+            </li>
+          ))}
+        </ul>
+      )}
+      {notes.map((n) => (
+        <p key={n} className="row__note">{n}</p>
+      ))}
+    </div>
   )
 }
 
@@ -228,8 +294,8 @@ function PriceBar({ estimate, count }) {
           </span>
         </div>
         <span className="mono pricebar__meta">
-          {estimate.showCore && <span className="pricebar__core">Websites {formatPrice(estimate.coreAmount)} + </span>}
-          {count} {count === 1 ? 'service' : 'services'}
+          {estimate.showCore && <span className="pricebar__core">Core {formatPrice(estimate.coreAmount)} + </span>}
+          {count} {count === 1 ? 'extra' : 'extras'}
         </span>
       </div>
     </div>
@@ -274,6 +340,7 @@ function Success({ estimate, delivery, error, onRetry }) {
         <div className="success__mark" aria-hidden="true"><CheckMark /></div>
         <h1 className="intro__title" tabIndex={-1} ref={titleRef}>Thank you. We’ve received your requirements.</h1>
         <p className="intro__copy">Our team will review your selections and get back to you with the final scope and proposal.</p>
+        <p className="success__core"><CheckMark /> {CORE.title} — both websites</p>
         {SITES.map((site) => {
           const lines = estimate.lines.filter((l) => l.siteId === site.id)
           if (!lines.length) return null

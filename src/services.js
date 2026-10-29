@@ -1,17 +1,13 @@
 /* ==========================================================================
-   SERVICE CATALOGUE — what the client can choose, for each of their two websites.
-   Each service is one checkbox; its `id` must match a key in PRICING (src/config.js)
-   and be unique across both websites (hence the `school_` / `tuition_` prefixes).
-   `includes` lists what a grouped service covers — shown as text, priced once.
-   `level` is an optional complexity tag (Basic / Standard / Advanced / Custom),
-   shown while no price is set.
+   SERVICE CATALOGUE — what the client gets and what they can add, for each website.
+   Selectable services are one checkbox each; their `id` must match a key in PRICING
+   (src/config.js) and be unique across both websites (hence `school_` / `tuition_`).
+   `includes` lists what a combined service covers — shown as text, priced once.
+   `level` sorts feature bundles into Standard / Advanced / Custom.
+   Pages and basic features are not checkboxes: they are part of core development.
    ========================================================================== */
 
-const page = (prefix) => (key, name, description) => ({ id: `${prefix}_page_${key}`, name, description })
-const schoolPage = page('school')
-const tuitionPage = page('tuition')
-
-/** Shown as a note under each website — complimentary, so nothing to tick. */
+/** Complimentary support — shown as a note under each website, nothing to tick. */
 const complimentarySupport = {
   title: 'Maintenance & Technical Support',
   label: 'Complimentary for 6 months',
@@ -21,6 +17,14 @@ const complimentarySupport = {
   ],
 }
 
+/** UI/UX design is the base of the new look, so it is always part of core development. */
+const uiuxDesign = {
+  title: 'Website UI/UX Design',
+  label: 'Included — must-have',
+  text: 'A custom, modern design for the revamped website. The new look of every page is built on this design, so it is always included in core development.',
+  notes: ['Visual content design (banners & graphics) included — first iteration only'],
+}
+
 export const SITES = [
   {
     id: 'school',
@@ -28,68 +32,111 @@ export const SITES = [
     kind: 'School Website',
     name: 'Vivek Vidyalay',
     objective: 'Build credibility, showcase the school, attract admissions and communicate clearly with parents and students.',
-    includedNote:
-      'Already included: a mobile-friendly design, secure HTTPS, an admission enquiry & contact form, call / email / WhatsApp buttons, Google Maps, basic SEO, speed optimisation, testing, launch and 6 months of maintenance & technical support.',
+    pages: [
+      { name: 'Home Page', description: 'Hero banner, school introduction, key highlights, admissions button and announcements' },
+      { name: 'About School', description: 'History, mission, vision, values and background' },
+      { name: 'Principal’s Message', description: 'Principal’s profile, welcome message and photograph' },
+      { name: 'Management & Trust', description: 'Trustees, management committee and leadership profiles' },
+      { name: 'Academics', description: 'Curriculum, grades, subjects and teaching approach' },
+      { name: 'Admissions', description: 'Procedure, eligibility, documents, fee information and enquiry button' },
+      { name: 'Facilities & Infrastructure', description: 'Classrooms, labs, library, playground and transport' },
+      { name: 'Faculty & Staff', description: 'Teacher profiles, qualifications and departments' },
+      { name: 'Gallery', description: 'Categorised photos and videos of school life' },
+      { name: 'News & Announcements', description: 'News, circulars, notices and updates' },
+      { name: 'Events & Calendar', description: 'Annual functions, competitions, celebrations and academic events' },
+      { name: 'Achievements', description: 'Results, awards, sports and student achievements' },
+      { name: 'Downloads', description: 'Syllabus, timetables, forms, circulars and academic calendars' },
+      { name: 'Parent Resources', description: 'Timings, uniform guidelines, policies and parent information' },
+      { name: 'Careers', description: 'Teaching and non-teaching vacancies' },
+      { name: 'Contact Us', description: 'Address, map, contact details and enquiry form' },
+      { name: 'FAQ', description: 'Common questions from parents and applicants' },
+      { name: 'Policies & Disclosures', description: 'Privacy policy, mandatory disclosures and affiliation details' },
+    ],
+    basic: [
+      { name: 'Online Admission Enquiry', description: 'Parents send an enquiry; the school receives their details instantly' },
+      { name: 'Notice Board', description: 'Your staff add, edit and remove notices themselves' },
+      { name: 'Photo Gallery Manager', description: 'Your staff upload and organise school photos' },
+      { name: 'School Transport Information', description: 'Routes, pickup points and transport details' },
+      { name: 'WhatsApp Chat', description: 'One-tap WhatsApp button for parents' },
+      { name: 'Multilingual Website', description: 'English, Gujarati and Hindi' },
+      { name: 'Social Media Integration', description: 'Social links and selected Instagram / Facebook / YouTube feeds' },
+      { name: 'Admission Campaign Pages', description: 'Your admin can create a page for each admission season' },
+    ],
     sections: [
       {
-        id: 'school-pages',
-        letter: 'A',
-        title: 'Website Pages',
-        bulk: true,
-        groups: [
-          schoolPage('home', 'Home Page', 'Hero banner, school introduction, key highlights, admissions call-to-action and announcements.'),
-          schoolPage('about', 'About School', 'History, mission, vision, values and institutional background.'),
-          schoolPage('principal', 'Principal’s Message', 'Principal’s profile, welcome message and photograph.'),
-          schoolPage('management', 'Management & Trust', 'Trustees, management committee, leadership and profiles.'),
-          schoolPage('academics', 'Academics', 'Curriculum, grades, subjects, academic approach and teaching methodology.'),
-          schoolPage('admissions', 'Admissions', 'Admission procedure, eligibility, required documents, fee information and enquiry button.'),
-          schoolPage('facilities', 'Facilities & Infrastructure', 'Classrooms, laboratories, library, playground, transport and other facilities.'),
-          schoolPage('faculty', 'Faculty & Staff', 'Teacher profiles, qualifications and departments.'),
-          schoolPage('gallery', 'Gallery', 'Categorised photos and videos of school activities.'),
-          schoolPage('news', 'News & Announcements', 'School news, circulars, notices and important updates.'),
-          schoolPage('events', 'Events & Calendar', 'Annual functions, competitions, celebrations and academic events.'),
-          schoolPage('achievements', 'Achievements', 'Academic results, awards, sports and student achievements.'),
-          schoolPage('downloads', 'Downloads', 'Syllabus, timetables, forms, circulars and academic calendars.'),
-          schoolPage('parents', 'Parent Resources', 'School timings, uniform guidelines, policies and parent information.'),
-          schoolPage('careers', 'Careers', 'Teaching and non-teaching vacancies and applications.'),
-          schoolPage('contact', 'Contact Us', 'Address, embedded map, contact details and enquiry form.'),
-          schoolPage('faq', 'FAQ', 'Frequently asked questions for parents and applicants.'),
-          schoolPage('policies', 'Policies & Disclosures', 'Privacy policy, mandatory disclosures and affiliation details where applicable.'),
-        ],
-      },
-      {
         id: 'school-features',
-        letter: 'B',
+        letter: 'A',
         title: 'School Features & Modules',
         intro:
-          'These go beyond ordinary pages — they need extra development, integrations or admin workflows. Portals, attendance and fee systems are software modules and are scoped separately.',
+          'Basic features are included in core development. Standard and Advanced features are combined into ready-made bundles — tick the ones you’d like and we’ll quote them separately.',
+        included: { title: 'Basic features', label: 'Included in core', items: 'basic' },
         groups: [
-          { id: 'school_admissionEnquiry', level: 'Basic', name: 'Online Admission Enquiry', description: 'Parents submit an enquiry; the school receives the lead and contact details.' },
-          { id: 'school_admissionApplication', level: 'Advanced', name: 'Online Admission Application', description: 'Full admission form with document uploads and application tracking.' },
-          { id: 'school_parentPortal', level: 'Advanced', name: 'Student / Parent Portal', description: 'Secure login to access student-specific information.' },
-          { id: 'school_teacherPortal', level: 'Advanced', name: 'Teacher Portal', description: 'Teachers publish class materials and relevant updates.' },
-          { id: 'school_homework', level: 'Advanced', name: 'Homework & Assignments', description: 'Publish or submit homework and learning materials.' },
-          { id: 'school_attendance', level: 'Advanced', name: 'Attendance Management', description: 'Maintain and display attendance records.' },
-          { id: 'school_results', level: 'Advanced', name: 'Results & Report Cards', description: 'Publish academic results and downloadable report cards.' },
-          { id: 'school_feePayment', level: 'Advanced', name: 'Online Fee Payment', description: 'Payment gateway for school fees with transaction records.' },
-          { id: 'school_transport', level: 'Basic', name: 'School Transport Information', description: 'Routes, pickup points and transport information.' },
-          { id: 'school_eventRegistration', level: 'Standard', name: 'Event Registration', description: 'Online registration for school events and activities.' },
-          { id: 'school_noticeCMS', level: 'Standard', name: 'Notice Board (staff-editable)', description: 'Staff can add, edit and remove notices themselves.' },
-          { id: 'school_galleryCMS', level: 'Standard', name: 'Photo Gallery (staff-editable)', description: 'Staff can upload and organise school photographs.' },
-          { id: 'school_documents', level: 'Standard', name: 'Document Management', description: 'Upload and manage circulars, forms and downloadable PDFs.' },
-          { id: 'school_whatsapp', level: 'Basic', name: 'WhatsApp Integration', description: 'Click-to-chat, and optionally automated messages.' },
-          { id: 'school_notifications', level: 'Advanced', name: 'Email / SMS Notifications', description: 'Automated messages for enquiries and selected workflows.' },
-          { id: 'school_multilingual', level: 'Standard', name: 'Multilingual Website', description: 'Content in English, Gujarati, Hindi or other selected languages.' },
-          { id: 'school_aiAssistant', level: 'Advanced', name: 'Live Chat / AI Assistant', description: 'Answers common parent and admission questions, any time.' },
-          { id: 'school_adminDashboard', level: 'Standard', name: 'Admin Dashboard', description: 'Manage selected website content and form submissions.' },
-          { id: 'school_erp', level: 'Custom', name: 'School ERP Integration', description: 'Connect the website to the school management software you already use.' },
-          { id: 'school_customFeature', level: 'Custom', name: 'Custom School Feature', description: 'Anything not covered above — describe it in the notes for the school below.' },
+          {
+            id: 'school_eventsDocuments',
+            level: 'Standard',
+            name: 'Events & Downloads Manager',
+            description: 'Run school events and share documents online without any developer help.',
+            includes: ['Online registration for events and activities', 'Upload and manage circulars, forms and PDFs'],
+          },
+          {
+            id: 'school_adminDashboard',
+            level: 'Standard',
+            name: 'Admin Dashboard & Enquiry Inbox',
+            description: 'One place to manage website content and see every enquiry and form submission.',
+          },
+          {
+            id: 'school_onlineAdmissions',
+            level: 'Advanced',
+            name: 'Online Admission System',
+            description: 'The complete admission process online, from application to tracking.',
+            includes: ['Full admission application form', 'Document uploads', 'Application status tracking'],
+          },
+          {
+            id: 'school_portals',
+            level: 'Advanced',
+            name: 'Student, Parent & Teacher Portals',
+            description: 'Secure logins so each family and teacher sees only what’s relevant to them.',
+            includes: ['Student / parent login', 'Teacher portal to publish class materials and updates', 'Homework & assignments'],
+          },
+          {
+            id: 'school_academicRecords',
+            level: 'Advanced',
+            name: 'Attendance & Results',
+            description: 'Keep academic records online and share them with parents.',
+            includes: ['Attendance management', 'Results and downloadable report cards'],
+          },
+          {
+            id: 'school_feePayment',
+            level: 'Advanced',
+            name: 'Online Fee Payment',
+            description: 'Parents pay school fees online through a secure payment gateway, with transaction records.',
+          },
+          {
+            id: 'school_smartCommunication',
+            level: 'Advanced',
+            name: 'Smart Communication',
+            description: 'Answer and update parents automatically.',
+            includes: ['Automated email / SMS notifications', 'Live chat / AI assistant for parent and admission questions'],
+          },
+          {
+            id: 'school_erp',
+            level: 'Custom',
+            name: 'School ERP Integration',
+            description: 'Connect the website to the school management software you already use.',
+          },
+          {
+            id: 'school_customFeature',
+            level: 'Custom',
+            name: 'Custom School Feature',
+            description: 'Anything not covered above — describe it in the notes for the school below.',
+          },
         ],
       },
       {
         id: 'school-brand',
-        letter: 'C',
+        letter: 'B',
         title: 'Branding, Design & Content',
+        complimentary: uiuxDesign,
         groups: [
           {
             id: 'school_branding',
@@ -98,26 +145,15 @@ export const SITES = [
             includes: ['Logo design / redesign', 'Brand identity'],
             bonus: 'Brand guidelines included',
           },
-          {
-            id: 'school_uiux',
-            name: 'Website UI/UX Design',
-            description: 'A custom, premium design for the school website, built for parents on phones and desktops.',
-            bonus: 'Visual content design (banners & graphics) included — first iteration only',
-          },
-          { id: 'school_contentWriting', name: 'Content Writing', description: 'Professional copy for the selected pages, written from information you share.' },
-          { id: 'school_photography', name: 'Professional Photography', description: 'Campus, classroom, faculty and event photo shoot.' },
-          { id: 'school_video', name: 'School Introduction Video', description: 'A short promotional or introduction video for the website and social media.' },
+          { id: 'school_contentWriting', name: 'Content Writing', description: 'Professional copy for the website pages, written from information you share.' },
         ],
       },
       {
         id: 'school-growth',
-        letter: 'D',
+        letter: 'C',
         title: 'Online Growth',
         groups: [
           { id: 'school_localSEO', name: 'Local SEO & Google Business Profile', description: 'Help parents nearby find the school on Google Search and Maps.' },
-          { id: 'school_analytics', name: 'Analytics & Enquiry Tracking', description: 'Google Analytics and Search Console, plus tracking of form, call and WhatsApp enquiries.' },
-          { id: 'school_admissionLanding', name: 'Admission Campaign Landing Page', description: 'A dedicated page for each admission season or campaign.' },
-          { id: 'school_social', name: 'Social Media Integration', description: 'Social links and selected Instagram / Facebook / YouTube feeds on the site.' },
           {
             id: 'school_advancedSEO',
             name: 'Advanced SEO / Google Ads',
@@ -127,11 +163,10 @@ export const SITES = [
       },
       {
         id: 'school-support',
-        letter: 'E',
+        letter: 'D',
         title: 'After Launch',
         complimentary: complimentarySupport,
         groups: [
-          { id: 'school_training', name: 'Staff Training', description: 'Hands-on training and a short guide so school staff can update notices, photos and pages.' },
           {
             id: 'school_supportAfter6Months',
             name: 'Support After 6 Months',
@@ -147,70 +182,114 @@ export const SITES = [
     kind: 'Tuition Classes Website',
     name: 'Krupanidhi English Academy',
     objective: 'Generate admission enquiries, present courses clearly, show teaching quality and turn visitors into enrolled students.',
-    includedNote:
-      'Already included: a mobile-friendly design, secure HTTPS, an admission enquiry & contact form, call / email / WhatsApp buttons, Google Maps, basic SEO, speed optimisation, testing, launch and 6 months of maintenance & technical support.',
+    pages: [
+      { name: 'Home Page', description: 'Why choose the academy, course highlights, testimonials and enquiry button' },
+      { name: 'About the Academy', description: 'History, teaching philosophy and what makes the academy different' },
+      { name: 'Courses Overview', description: 'All courses, subjects, batches and programmes' },
+      { name: 'Individual Course Pages', description: 'Syllabus, duration, eligibility, fees and enrolment button for each course' },
+      { name: 'Faculty / Mentors', description: 'Teacher profiles, experience and specialisations' },
+      { name: 'Admissions & Enrolment', description: 'Admission process, batch availability and enrolment enquiry' },
+      { name: 'Results & Achievements', description: 'Student scores, exam results and success stories' },
+      { name: 'Student Testimonials', description: 'Written and video reviews from students and parents' },
+      { name: 'Study Materials', description: 'Notes, sample papers and downloadable resources' },
+      { name: 'Blog & Learning Resources', description: 'Articles, exam tips and learning guidance' },
+      { name: 'Gallery', description: 'Classroom photos, activities and events' },
+      { name: 'FAQ', description: 'Common questions about admissions, classes, fees and teaching' },
+      { name: 'Contact & Location', description: 'Contact form, Google Maps, phone and WhatsApp button' },
+      { name: 'Policies', description: 'Privacy, terms, refunds where relevant and other disclosures' },
+    ],
+    pageNotes: [
+      'Events & Workshops and Batch Timetable pages — your admin can add these any time.',
+      'Batch Timetable can also be built by us as part of core development, on request.',
+    ],
+    basic: [
+      { name: 'Admission Enquiry Form', description: 'Capture name, phone, course interest and student details' },
+      { name: 'WhatsApp Lead Buttons', description: 'Course-specific WhatsApp enquiry buttons' },
+      { name: 'Demo Class Booking', description: 'Students request a free trial class' },
+      { name: 'Study Material Library', description: 'Downloadable notes and resources for students' },
+      { name: 'Social Media Integration', description: 'Social links and selected Instagram / Facebook / YouTube feeds' },
+      { name: 'Course Campaign Pages', description: 'Your admin can create a page for a course, batch launch or admission campaign' },
+    ],
     sections: [
       {
-        id: 'tuition-pages',
-        letter: 'A',
-        title: 'Website Pages',
-        bulk: true,
-        groups: [
-          tuitionPage('home', 'Home Page', 'Why choose the academy, course highlights, testimonials and enquiry button.'),
-          tuitionPage('about', 'About the Academy', 'History, teaching philosophy and what makes the academy different.'),
-          tuitionPage('courses', 'Courses Overview', 'All courses, subjects, batches and learning programmes.'),
-          tuitionPage('courseDetails', 'Individual Course Pages', 'Syllabus, duration, eligibility, fees and enrolment button for each course.'),
-          tuitionPage('faculty', 'Faculty / Mentors', 'Teacher profiles, experience, qualifications and specialisations.'),
-          tuitionPage('admissions', 'Admissions & Enrolment', 'Admission process, batch availability and enrolment enquiry.'),
-          tuitionPage('results', 'Results & Achievements', 'Student scores, exam results and success stories.'),
-          tuitionPage('testimonials', 'Student Testimonials', 'Written and video reviews from students and parents.'),
-          tuitionPage('timetable', 'Batch Timetable', 'Class schedules, timings and batch information.'),
-          tuitionPage('materials', 'Study Materials', 'Notes, sample papers and downloadable resources.'),
-          tuitionPage('blog', 'Blog & Learning Resources', 'Articles, exam tips and learning guidance.'),
-          tuitionPage('events', 'Events & Workshops', 'Seminars, workshops, demo classes and academic events.'),
-          tuitionPage('gallery', 'Gallery', 'Classroom photos, activities, events and the academy environment.'),
-          tuitionPage('faq', 'FAQ', 'Common questions about admissions, classes, fees and teaching.'),
-          tuitionPage('contact', 'Contact & Location', 'Contact form, Google Maps, phone and WhatsApp button.'),
-          tuitionPage('careers', 'Careers', 'Faculty recruitment and job openings.'),
-          tuitionPage('policies', 'Policies', 'Privacy, terms, refunds where relevant and other disclosures.'),
-        ],
-      },
-      {
         id: 'tuition-features',
-        letter: 'B',
+        letter: 'A',
         title: 'Tuition Class Features & Modules',
         intro:
-          'Start with getting quality enquiries; a full learning platform (LMS, tests, student login) can be added later and is scoped separately.',
+          'Basic features are included in core development. Standard and Advanced features are combined into ready-made bundles — tick the ones you’d like and we’ll quote them separately.',
+        included: { title: 'Basic features', label: 'Included in core', items: 'basic' },
         groups: [
-          { id: 'tuition_admissionEnquiry', level: 'Basic', name: 'Admission Enquiry Form', description: 'Capture name, phone, course interest and student details.' },
-          { id: 'tuition_whatsappLeads', level: 'Basic', name: 'WhatsApp Lead Generation', description: 'Course-specific WhatsApp enquiry buttons.' },
-          { id: 'tuition_demoBooking', level: 'Standard', name: 'Demo Class Booking', description: 'Students request or schedule a free trial class.' },
-          { id: 'tuition_enrolment', level: 'Advanced', name: 'Online Enrolment', description: 'Register for batches and courses online.' },
-          { id: 'tuition_courseCMS', level: 'Standard', name: 'Course & Batch Manager', description: 'Staff update courses, fees, schedules and batch details themselves.' },
-          { id: 'tuition_leadDashboard', level: 'Advanced', name: 'Lead Management Dashboard', description: 'View, filter, assign and follow up on enquiries.' },
-          { id: 'tuition_crm', level: 'Standard', name: 'CRM Integration', description: 'Send enquiries into Zoho, HubSpot or another CRM.' },
-          { id: 'tuition_feePayment', level: 'Advanced', name: 'Online Fee Payment', description: 'Accept course fees through a payment gateway.' },
-          { id: 'tuition_studentPortal', level: 'Advanced', name: 'Student Login Portal', description: 'A private account and dashboard for each student.' },
-          { id: 'tuition_lms', level: 'Advanced', name: 'Learning Management System', description: 'Courses, lessons, resources and learning progress.' },
-          { id: 'tuition_videoLessons', level: 'Advanced', name: 'Recorded Video Lessons', description: 'Video access restricted to enrolled students.' },
-          { id: 'tuition_liveClasses', level: 'Standard', name: 'Live Class Integration', description: 'Connect Zoom, Google Meet or another class platform.' },
-          { id: 'tuition_tests', level: 'Advanced', name: 'Online Tests & Quizzes', description: 'Mock tests, scoring and assessments.' },
-          { id: 'tuition_assignments', level: 'Advanced', name: 'Assignment Submission', description: 'Students upload homework; teachers review it.' },
-          { id: 'tuition_attendance', level: 'Advanced', name: 'Attendance Tracking', description: 'Track student attendance across batches.' },
-          { id: 'tuition_progress', level: 'Advanced', name: 'Progress Reports', description: 'Show assessment scores and student performance.' },
-          { id: 'tuition_library', level: 'Standard', name: 'Study Material Library', description: 'Downloadable or members-only learning resources.' },
-          { id: 'tuition_certificates', level: 'Advanced', name: 'Certificates', description: 'Generate completion or participation certificates.' },
-          { id: 'tuition_notifications', level: 'Advanced', name: 'Automated Notifications', description: 'Email, WhatsApp or SMS for admission and class updates.' },
-          { id: 'tuition_referrals', level: 'Advanced', name: 'Referral System', description: 'Track student referrals and run referral offers.' },
-          { id: 'tuition_aiAssistant', level: 'Custom', name: 'AI Student Assistant', description: 'Answers course questions and helps with academic resources.' },
-          { id: 'tuition_multilingual', level: 'Standard', name: 'Multilingual Content', description: 'English, Hindi, Gujarati or other selected languages.' },
-          { id: 'tuition_customFeature', level: 'Custom', name: 'Custom Tuition Feature', description: 'Anything not covered above — describe it in the notes for the tuition classes below.' },
+          {
+            id: 'tuition_courseManager',
+            level: 'Standard',
+            name: 'Course & Batch Manager',
+            description: 'Your staff update courses, fees, schedules and batch details themselves.',
+          },
+          {
+            id: 'tuition_liveClasses',
+            level: 'Standard',
+            name: 'Live Online Classes',
+            description: 'Connect Zoom, Google Meet or another class platform, with class links for each batch.',
+          },
+          {
+            id: 'tuition_crm',
+            level: 'Standard',
+            name: 'CRM Integration',
+            description: 'Send every enquiry straight into Zoho, HubSpot or the CRM you use.',
+          },
+          {
+            id: 'tuition_multilingual',
+            level: 'Standard',
+            name: 'Multilingual Content',
+            description: 'Website content in English, Hindi, Gujarati or other selected languages.',
+          },
+          {
+            id: 'tuition_enrolmentPayments',
+            level: 'Advanced',
+            name: 'Online Enrolment & Fee Payment',
+            description: 'Students join a batch and pay online in one go.',
+            includes: ['Online registration for batches and courses', 'Course fee payment through a payment gateway'],
+          },
+          {
+            id: 'tuition_leadFollowUp',
+            level: 'Advanced',
+            name: 'Lead Follow-up System',
+            description: 'Turn more enquiries into admissions.',
+            includes: ['Lead management dashboard — view, filter, assign and follow up', 'Automated email / WhatsApp / SMS updates', 'Student referral tracking'],
+          },
+          {
+            id: 'tuition_learningPortal',
+            level: 'Advanced',
+            name: 'Student Learning Portal',
+            description: 'A private online classroom for enrolled students.',
+            includes: ['Student login and dashboard', 'Lessons, resources and learning progress (LMS)', 'Recorded video lessons for enrolled students'],
+          },
+          {
+            id: 'tuition_assessments',
+            level: 'Advanced',
+            name: 'Tests, Attendance & Progress',
+            description: 'Track how every student is doing.',
+            includes: ['Online tests & quizzes', 'Assignment submission and teacher review', 'Attendance tracking', 'Progress reports and certificates'],
+          },
+          {
+            id: 'tuition_aiAssistant',
+            level: 'Custom',
+            name: 'AI Student Assistant',
+            description: 'Answers course questions and helps students with academic resources.',
+          },
+          {
+            id: 'tuition_customFeature',
+            level: 'Custom',
+            name: 'Custom Tuition Feature',
+            description: 'Anything not covered above — describe it in the notes for the tuition classes below.',
+          },
         ],
       },
       {
         id: 'tuition-brand',
-        letter: 'C',
+        letter: 'B',
         title: 'Branding, Design & Content',
+        complimentary: uiuxDesign,
         groups: [
           {
             id: 'tuition_branding',
@@ -219,26 +298,15 @@ export const SITES = [
             includes: ['Logo design / redesign', 'Brand identity'],
             bonus: 'Brand guidelines included',
           },
-          {
-            id: 'tuition_uiux',
-            name: 'Website UI/UX Design',
-            description: 'A custom, conversion-focused design that turns visitors into enquiries.',
-            bonus: 'Visual content design (banners & graphics) included — first iteration only',
-          },
-          { id: 'tuition_contentWriting', name: 'Content Writing', description: 'Professional copy for the selected pages and course descriptions.' },
-          { id: 'tuition_photography', name: 'Professional Photography', description: 'Classroom, faculty and student activity photo shoot.' },
-          { id: 'tuition_video', name: 'Academy Introduction Video', description: 'A short promotional video for the website, ads and social media.' },
+          { id: 'tuition_contentWriting', name: 'Content Writing', description: 'Professional copy for the website pages and course descriptions.' },
         ],
       },
       {
         id: 'tuition-growth',
-        letter: 'D',
+        letter: 'C',
         title: 'Online Growth',
         groups: [
           { id: 'tuition_localSEO', name: 'Local SEO & Google Business Profile', description: 'Help students nearby find the academy on Google Search and Maps.' },
-          { id: 'tuition_analytics', name: 'Analytics & Enquiry Tracking', description: 'Google Analytics and Search Console, plus tracking of form, call and WhatsApp enquiries.' },
-          { id: 'tuition_courseLanding', name: 'Course Campaign Landing Pages', description: 'Dedicated pages for a course, batch launch or admission campaign.' },
-          { id: 'tuition_social', name: 'Social Media Integration', description: 'Social links and selected Instagram / Facebook / YouTube feeds on the site.' },
           {
             id: 'tuition_advancedSEO',
             name: 'Advanced SEO / Google Ads',
@@ -248,11 +316,10 @@ export const SITES = [
       },
       {
         id: 'tuition-support',
-        letter: 'E',
+        letter: 'D',
         title: 'After Launch',
         complimentary: complimentarySupport,
         groups: [
-          { id: 'tuition_training', name: 'Staff Training', description: 'Hands-on training and a short guide so staff can update courses, batches and photos.' },
           {
             id: 'tuition_supportAfter6Months',
             name: 'Support After 6 Months',
@@ -264,7 +331,44 @@ export const SITES = [
   },
 ]
 
-/** Every service of one website, in page order. */
+/** Core website development — one price for both websites. Shown as an expandable list. */
+export const CORE = {
+  title: 'Core Website Development',
+  subtitle: 'Both websites: Vivek Vidyalay and Krupanidhi English Academy',
+  summary:
+    'Everything below is included in this price — the new design, all listed website pages and the basic features for both websites.',
+  design: [
+    { name: 'Website UI/UX Design', description: 'Custom design for the new look of both websites — must-have, always included' },
+    { name: 'Mobile-friendly design', description: 'Works on phones, tablets and desktops' },
+  ],
+  technical: [
+    { name: 'Admin panel', description: 'Your staff update notices, photos and pages themselves' },
+    { name: 'Secure HTTPS', description: 'SSL certificate and basic security' },
+    { name: 'Contact & enquiry forms', description: 'With call, email and WhatsApp buttons and Google Maps' },
+    { name: 'Basic SEO & speed optimisation', description: 'Page titles, descriptions and fast loading' },
+    { name: 'Testing & launch', description: 'Checked on all devices and taken live' },
+    { name: '6 months maintenance & technical support', description: 'Complimentary after launch' },
+  ],
+}
+
+/** Groups shown in the core dropdown, in reading order. */
+export const coreSections = () => [
+  { title: 'Design — both websites', items: CORE.design },
+  ...SITES.flatMap((site) => [
+    { title: `${site.name} — website pages (${site.pages.length})`, items: site.pages, notes: site.pageNotes },
+    { title: `${site.name} — basic features`, items: site.basic },
+  ]),
+  { title: 'Technical, launch & support — both websites', items: CORE.technical },
+]
+
+/** Every selectable service of one website, in page order. */
 export const siteGroups = (site) => site.sections.flatMap((s) => s.groups)
 
 export const ALL_GROUPS = SITES.flatMap((site) => siteGroups(site).map((g) => ({ ...g, siteId: site.id })))
+
+/** Order and headings for feature bundles. */
+export const LEVELS = [
+  { level: 'Standard', title: 'Standard features', label: 'Quoted separately' },
+  { level: 'Advanced', title: 'Advanced features', label: 'Quoted separately' },
+  { level: 'Custom', title: 'Custom work', label: 'Quoted separately' },
+]

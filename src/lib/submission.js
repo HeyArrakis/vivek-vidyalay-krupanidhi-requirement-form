@@ -1,5 +1,5 @@
 import { CLIENT, FORM_SUBMIT_EMAIL } from '../config.js'
-import { SITES } from '../services.js'
+import { CORE, SITES } from '../services.js'
 import { formatPrice, pricesConfigured } from './pricing.js'
 
 export const FORM_SUBMIT_ACTION = `https://formsubmit.co/${FORM_SUBMIT_EMAIL}`
@@ -14,22 +14,23 @@ const priceText = (l) =>
 
 /**
  * Builds the email payload. Keys are inserted in reading order:
- * CLIENT → per website: its ticked services, then its notes → ESTIMATED INVESTMENT (only if prices are set)
+ * CLIENT → CORE → per website: its ticked extras, then its notes → ESTIMATED INVESTMENT (only if prices are set)
  */
 export function buildSubmission(values, estimate) {
   const p = {
-    _subject: `Website checklist — ${CLIENT.name} (${estimate.lines.length} services ticked)`,
+    _subject: `Website checklist — ${CLIENT.name} (core + ${estimate.lines.length} extras)`,
     _template: 'box',
     _captcha: 'false',
 
     CLIENT: CLIENT.name,
     'FILLED BY': orDash(values.name),
+    [`CORE — ${CORE.title}`]: `Included${estimate.showCore ? ` — ${formatPrice(estimate.coreAmount)}` : ''} (both websites: UI/UX design, all listed pages, basic features, launch, 6 months support)`,
   }
 
   for (const site of SITES) {
     const lines = estimate.lines.filter((l) => l.siteId === site.id)
     const head = `${site.number}. ${site.kind.toUpperCase()} — ${site.name}`
-    p[head] = lines.length ? `${lines.length} ticked` : 'Nothing ticked'
+    p[head] = lines.length ? `${lines.length} extras ticked` : 'Core only — no extras ticked'
     for (const line of lines) {
       p[`${site.kind} — ${line.name}`] = `Yes${priceText(line)}`
     }
@@ -38,7 +39,7 @@ export function buildSubmission(values, estimate) {
 
   if (pricesConfigured()) {
     p['ESTIMATED INVESTMENT'] = `${estimate.hasFromPrices ? 'From ' : ''}${formatPrice(estimate.oneTimeTotal)}${
-      estimate.showCore ? ` (incl. base websites ${formatPrice(estimate.coreAmount)})` : ''
+      estimate.showCore ? ` (incl. core development ${formatPrice(estimate.coreAmount)}; “Quoted separately” items not included)` : ''
     }`
     if (estimate.monthlyTotal > 0) p['ESTIMATED INVESTMENT — Monthly'] = `${formatPrice(estimate.monthlyTotal)} / month`
   }

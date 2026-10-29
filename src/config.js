@@ -28,10 +28,7 @@ export const CURRENCY = {
 }
 
 /**
- * PRICING — one entry per service id from src/services.js (not per included item).
- *
- * While every amount is null the page is a plain requirement checklist: no prices,
- * no totals, no price bar. Fill in amounts once rates are confirmed.
+ * PRICING — one entry per selectable service id from src/services.js.
  *
  *   amount — rupees, e.g. 4000. Counted in the estimate when ticked.
  *            null = not counted; shows `label` instead (e.g. "Quoted separately").
@@ -39,23 +36,26 @@ export const CURRENCY = {
  *   label  — text shown when there is no amount
  *   rates  — optional per-unit rates listed under the service
  *
- * Services without an entry show their complexity tag (Basic / Standard / Advanced / Custom).
+ * Standard / Advanced / Custom feature bundles without an entry show "Quoted separately".
  */
 export const PRICING = {
-  // The base website for each institution (always included, not a checkbox)
-  schoolWebsite: { amount: null },
-  tuitionWebsite: { amount: null },
+  // Core website development for BOTH websites (always included, not a checkbox):
+  // UI/UX design, all listed pages, basic features, technical setup, launch, 6 months support.
+  coreWebsite: { amount: 25000 },
 
-  // Examples, once confirmed:
-  // school_page_gallery: { amount: 1500 },
-  // school_feePayment: { amount: 12000, type: 'from' },
-  // tuition_lms: { amount: null, label: 'Quoted separately' },
-  school_customFeature: { amount: null, label: 'Quoted separately' },
-  school_erp: { amount: null, label: 'Quoted separately' },
+  // Branding & content (per website)
+  school_branding: { amount: 3000 },
+  tuition_branding: { amount: 3000 },
+  school_contentWriting: { amount: null, label: '₹200 / section' },
+  tuition_contentWriting: { amount: null, label: '₹200 / section' },
+
+  // Online growth (per website)
+  school_localSEO: { amount: 1000 },
+  tuition_localSEO: { amount: 1000 },
   school_advancedSEO: { amount: null, label: 'Priced on your goals' },
-  school_supportAfter6Months: { amount: null, label: 'Quoted separately' },
-  tuition_customFeature: { amount: null, label: 'Quoted separately' },
-  tuition_aiAssistant: { amount: null, label: 'Quoted separately' },
   tuition_advancedSEO: { amount: null, label: 'Priced on your goals' },
+
+  // After launch
+  school_supportAfter6Months: { amount: null, label: 'Quoted separately' },
   tuition_supportAfter6Months: { amount: null, label: 'Quoted separately' },
 }
