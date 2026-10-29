@@ -6,6 +6,7 @@ const pricing = {
   school_branding: { amount: 3000 },
   tuition_branding: { amount: 3000 },
   school_contentWriting: { amount: null, label: '₹200 / section' },
+  school_uiux: { amount: 5000 },
 }
 const groups = [
   { id: 'school_branding', siteId: 'school', name: 'Logo & Brand Identity' },
@@ -13,6 +14,7 @@ const groups = [
   { id: 'school_contentWriting', siteId: 'school', name: 'Content Writing' },
   { id: 'school_portals', siteId: 'school', name: 'Portals', level: 'Advanced' },
 ]
+const withRequired = [...groups, { id: 'school_uiux', siteId: 'school', name: 'UI/UX', required: true }]
 const est = (selection) => calculateEstimate(selection, { pricing, groups })
 
 describe('pricing', () => {
@@ -31,6 +33,13 @@ describe('pricing', () => {
     expect(e.lines).toHaveLength(2)
     expect(e.lines[1].label).toBe('Quoted separately')
     expect(e.oneTimeTotal).toBe(25000)
+  })
+
+  it('always counts required services and keeps them out of extras', () => {
+    const e = calculateEstimate({}, { pricing, groups: withRequired })
+    expect(e.oneTimeTotal).toBe(25000 + 5000)
+    expect(e.lines[0].required).toBe(true)
+    expect(e.extras).toHaveLength(0)
   })
 
   it('shows no core price until one is set', () => {

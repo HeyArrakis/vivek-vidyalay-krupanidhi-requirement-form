@@ -40,8 +40,12 @@ export const CURRENCY = {
  */
 export const PRICING = {
   // Core website development for BOTH websites (always included, not a checkbox):
-  // UI/UX design, all listed pages, basic features, technical setup, launch, 6 months support.
+  // all listed pages, basic features, technical setup, launch, 3 months support.
   coreWebsite: { amount: 25000 },
+
+  // Website UI/UX Design — required for every website, always counted (not core)
+  school_uiux: { amount: 5000 },
+  tuition_uiux: { amount: 5000 },
 
   // Branding & content (per website)
   school_branding: { amount: 3000 },
@@ -56,6 +60,6 @@ export const PRICING = {
   tuition_advancedSEO: { amount: null, label: 'Priced on your goals' },
 
   // After launch
-  school_supportAfter6Months: { amount: null, label: 'Quoted separately' },
-  tuition_supportAfter6Months: { amount: null, label: 'Quoted separately' },
+  school_supportAfter3Months: { amount: null, label: 'Quoted separately' },
+  tuition_supportAfter3Months: { amount: null, label: 'Quoted separately' },
 }

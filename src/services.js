@@ -10,19 +10,11 @@
 /** Complimentary support — shown as a note under each website, nothing to tick. */
 const complimentarySupport = {
   title: 'Maintenance & Technical Support',
-  label: 'Complimentary for 6 months',
-  text: 'Free for the first 6 months after launch.',
+  label: 'Complimentary for 3 months',
+  text: 'Free for the first 3 months after launch.',
   notes: [
-    'During the 6 months, any additions, deletions or changes beyond maintenance and technical checks are charged separately, based on the work.',
+    'During the 3 months, any additions, deletions or changes beyond maintenance and technical checks are charged separately, based on the work.',
   ],
-}
-
-/** UI/UX design is the base of the new look, so it is always part of core development. */
-const uiuxDesign = {
-  title: 'Website UI/UX Design',
-  label: 'Included — must-have',
-  text: 'A custom, modern design for the revamped website. The new look of every page is built on this design, so it is always included in core development.',
-  notes: ['Visual content design (banners & graphics) included — first iteration only'],
 }
 
 export const SITES = [
@@ -56,7 +48,6 @@ export const SITES = [
       { name: 'Online Admission Enquiry', description: 'Parents send an enquiry; the school receives their details instantly' },
       { name: 'Notice Board', description: 'Your staff add, edit and remove notices themselves' },
       { name: 'Photo Gallery Manager', description: 'Your staff upload and organise school photos' },
-      { name: 'School Transport Information', description: 'Routes, pickup points and transport details' },
       { name: 'WhatsApp Chat', description: 'One-tap WhatsApp button for parents' },
       { name: 'Multilingual Website', description: 'English, Gujarati and Hindi' },
       { name: 'Social Media Integration', description: 'Social links and selected Instagram / Facebook / YouTube feeds' },
@@ -136,8 +127,15 @@ export const SITES = [
         id: 'school-brand',
         letter: 'B',
         title: 'Branding, Design & Content',
-        complimentary: uiuxDesign,
         groups: [
+          {
+            id: 'school_uiux',
+            required: true,
+            name: 'Website UI/UX Design',
+            description:
+              'A custom, modern design for the revamped website. Every page of the new website is built on this design, so it is required for every project.',
+            bonus: 'Visual content design (banners & graphics) included — first iteration only',
+          },
           {
             id: 'school_branding',
             name: 'Logo & Brand Identity',
@@ -168,9 +166,9 @@ export const SITES = [
         complimentary: complimentarySupport,
         groups: [
           {
-            id: 'school_supportAfter6Months',
-            name: 'Support After 6 Months',
-            description: 'Continued maintenance, technical support and content updates after the complimentary 6 months. Charged based on the scope of work.',
+            id: 'school_supportAfter3Months',
+            name: 'Support After 3 Months',
+            description: 'Continued maintenance, technical support and content updates after the complimentary 3 months. Charged based on the scope of work.',
           },
         ],
       },
@@ -289,8 +287,15 @@ export const SITES = [
         id: 'tuition-brand',
         letter: 'B',
         title: 'Branding, Design & Content',
-        complimentary: uiuxDesign,
         groups: [
+          {
+            id: 'tuition_uiux',
+            required: true,
+            name: 'Website UI/UX Design',
+            description:
+              'A custom, modern design for the revamped website. Every page of the new website is built on this design, so it is required for every project.',
+            bonus: 'Visual content design (banners & graphics) included — first iteration only',
+          },
           {
             id: 'tuition_branding',
             name: 'Logo & Brand Identity',
@@ -321,9 +326,9 @@ export const SITES = [
         complimentary: complimentarySupport,
         groups: [
           {
-            id: 'tuition_supportAfter6Months',
-            name: 'Support After 6 Months',
-            description: 'Continued maintenance, technical support and content updates after the complimentary 6 months. Charged based on the scope of work.',
+            id: 'tuition_supportAfter3Months',
+            name: 'Support After 3 Months',
+            description: 'Continued maintenance, technical support and content updates after the complimentary 3 months. Charged based on the scope of work.',
           },
         ],
       },
@@ -336,29 +341,25 @@ export const CORE = {
   title: 'Core Website Development',
   subtitle: 'Both websites: Vivek Vidyalay and Krupanidhi English Academy',
   summary:
-    'Everything below is included in this price — the new design, all listed website pages and the basic features for both websites.',
-  design: [
-    { name: 'Website UI/UX Design', description: 'Custom design for the new look of both websites — must-have, always included' },
-    { name: 'Mobile-friendly design', description: 'Works on phones, tablets and desktops' },
-  ],
+    'Everything below is included in this price — all listed website pages, the basic features and the technical setup for both websites. Website UI/UX Design is a separate, required service for each website (see section B).',
+  design: [{ name: 'Mobile-friendly build', description: 'Works on phones, tablets and desktops' }],
   technical: [
     { name: 'Admin panel', description: 'Your staff update notices, photos and pages themselves' },
     { name: 'Secure HTTPS', description: 'SSL certificate and basic security' },
     { name: 'Contact & enquiry forms', description: 'With call, email and WhatsApp buttons and Google Maps' },
     { name: 'Basic SEO & speed optimisation', description: 'Page titles, descriptions and fast loading' },
     { name: 'Testing & launch', description: 'Checked on all devices and taken live' },
-    { name: '6 months maintenance & technical support', description: 'Complimentary after launch' },
+    { name: '3 months maintenance & technical support', description: 'Complimentary after launch' },
   ],
 }
 
 /** Groups shown in the core dropdown, in reading order. */
 export const coreSections = () => [
-  { title: 'Design — both websites', items: CORE.design },
   ...SITES.flatMap((site) => [
     { title: `${site.name} — website pages (${site.pages.length})`, items: site.pages, notes: site.pageNotes },
     { title: `${site.name} — basic features`, items: site.basic },
   ]),
-  { title: 'Technical, launch & support — both websites', items: CORE.technical },
+  { title: 'Build, technical, launch & support — both websites', items: [...CORE.design, ...CORE.technical] },
 ]
 
 /** Every selectable service of one website, in page order. */

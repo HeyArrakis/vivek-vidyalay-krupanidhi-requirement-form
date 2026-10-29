@@ -34,13 +34,26 @@ export default function ChecklistGroup({ group, checked, onToggle }) {
   const id = `svc-${group.id}`
   // Bundles sit under a "Quoted separately" heading, so they only show a label once priced.
   const label = group.level && !PRICING[group.id] ? '' : priceLabel(group.id)
+  // A required service is always ticked and can't be unticked.
+  const on = group.required || checked
   return (
     <li>
-      <label className={`row ${checked ? 'is-checked' : ''}`} htmlFor={id}>
-        <input id={id} type="checkbox" className="sr-only" name={`service_${group.id}`} checked={checked} onChange={() => onToggle(group.id)} />
-        <Box checked={checked} />
+      <label className={`row ${on ? 'is-checked' : ''} ${group.required ? 'is-required' : ''}`} htmlFor={id}>
+        <input
+          id={id}
+          type="checkbox"
+          className="sr-only"
+          name={`service_${group.id}`}
+          checked={on}
+          disabled={group.required}
+          onChange={() => onToggle(group.id)}
+        />
+        <Box checked={on} />
         <span className="row__text">
-          <span className="row__title">{group.name}</span>
+          <span className="row__title">
+            {group.name}
+            {group.required && <span className="row__required mono">Required</span>}
+          </span>
           <span className="row__desc">{group.description}</span>
           <Extras group={group} />
           {group.bonus && <span className="row__bonus mono">+ {group.bonus}</span>}

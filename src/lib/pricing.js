@@ -31,16 +31,19 @@ export function priceLabel(groupId, pricing = PRICING) {
  *
  * `selection` maps groupId → true when that service is ticked. Each service is
  * one checkbox, so a grouped service (e.g. Logo & Brand Identity) is charged once.
- * Services without an amount add nothing. Core development is always counted once.
+ * Services without an amount add nothing. Core development is always counted once,
+ * and required services are counted whether or not they are in `selection`.
  */
 export function calculateEstimate(selection, { pricing = PRICING, groups = ALL_GROUPS } = {}) {
   const lines = []
   for (const group of groups) {
-    if (!selection[group.id]) continue
+    // Required services (e.g. UI/UX design) are always part of the estimate.
+    if (!group.required && !selection[group.id]) continue
     const p = pricing[group.id]
     lines.push({
       groupId: group.id,
       siteId: group.siteId,
+      required: !!group.required,
       name: group.name,
       amount: hasAmount(p) ? p.amount : null,
       label: p?.label ?? (group.level ? QUOTED : ''),
@@ -58,6 +61,7 @@ export function calculateEstimate(selection, { pricing = PRICING, groups = ALL_G
 
   return {
     lines,
+    extras: lines.filter((l) => !l.required),
     showCore: hasAmount(core),
     coreAmount,
     addOnsTotal: sum(oneTime),

@@ -8,11 +8,11 @@ A simple, single-page **website requirement checklist** prepared by
 
 At the top, **Core Website Development (₹25,000, both websites)** has a "See everything included"
 dropdown: UI/UX design, every listed page and the basic features of each website, plus technical
-setup, launch and 6 months of support.
+setup, launch and 3 months of support.
 
 Below it, each website has: **A** Features & Modules (Basic included in core; Standard, Advanced
 and Custom bundles quoted separately), **B** Branding, Design & Content (UI/UX always included),
-**C** Online Growth, **D** After Launch. The client ticks any extras, optionally adds a note per
+**B** also holds the required Website UI/UX Design (₹5,000 per website, always counted). **C** Online Growth, **D** After Launch. The client ticks any extras, optionally adds a note per
 website, and submits.
 
 ---
@@ -61,7 +61,7 @@ export const PRICING = {
   school_contentWriting: { amount: null, label: '₹200 / section' },
   school_localSEO: { amount: 1000 },
   school_advancedSEO: { amount: null, label: 'Priced on your goals' },
-  school_supportAfter6Months: { amount: null, label: 'Quoted separately' },
+  school_supportAfter3Months: { amount: null, label: 'Quoted separately' },
   // …same keys with the tuition_ prefix
 }
 ```

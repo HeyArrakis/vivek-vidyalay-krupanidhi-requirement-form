@@ -58,8 +58,8 @@ export default function App() {
     return <Success estimate={sent.estimate} delivery={delivery} error={submitError} onRetry={() => deliver(sent.payload)} />
   }
 
-  const count = estimate.lines.length
-  const siteCount = (siteId) => estimate.lines.filter((l) => l.siteId === siteId).length
+  const count = estimate.extras.length
+  const siteCount = (siteId) => estimate.extras.filter((l) => l.siteId === siteId).length
 
   return (
     <>
@@ -98,8 +98,8 @@ export default function App() {
                 </div>
               </div>
               <p className="site__core">
-                <CheckMark /> {site.pages.length} website pages, {site.basic.length} basic features and the UI/UX design are included in core
-                development.
+                <CheckMark /> {site.pages.length} website pages and {site.basic.length} basic features are included in core development.
+                Website UI/UX Design is required and priced separately in section B.
               </p>
 
               {site.sections.map((sec) => (
@@ -282,6 +282,7 @@ function Included({ title, label, text, items, notes = [] }) {
 
 /** Fixed to the bottom of the screen so the total is always visible while ticking. */
 function PriceBar({ estimate, count }) {
+  const requiredTotal = estimate.lines.filter((l) => l.required && l.amount != null).reduce((t, l) => t + l.amount, 0)
   return (
     <div className="pricebar" role="status" aria-live="polite" aria-atomic="true">
       <div className="wrap pricebar__inner">
@@ -295,6 +296,7 @@ function PriceBar({ estimate, count }) {
         </div>
         <span className="mono pricebar__meta">
           {estimate.showCore && <span className="pricebar__core">Core {formatPrice(estimate.coreAmount)} + </span>}
+          {requiredTotal > 0 && <span className="pricebar__core">UI/UX {formatPrice(requiredTotal)} + </span>}
           {count} {count === 1 ? 'extra' : 'extras'}
         </span>
       </div>

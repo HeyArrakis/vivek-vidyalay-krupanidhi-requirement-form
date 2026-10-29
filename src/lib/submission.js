@@ -18,21 +18,22 @@ const priceText = (l) =>
  */
 export function buildSubmission(values, estimate) {
   const p = {
-    _subject: `Website checklist — ${CLIENT.name} (core + ${estimate.lines.length} extras)`,
+    _subject: `Website checklist — ${CLIENT.name} (core + ${estimate.extras.length} extras)`,
     _template: 'box',
     _captcha: 'false',
 
     CLIENT: CLIENT.name,
     'FILLED BY': orDash(values.name),
-    [`CORE — ${CORE.title}`]: `Included${estimate.showCore ? ` — ${formatPrice(estimate.coreAmount)}` : ''} (both websites: UI/UX design, all listed pages, basic features, launch, 6 months support)`,
+    [`CORE — ${CORE.title}`]: `Included${estimate.showCore ? ` — ${formatPrice(estimate.coreAmount)}` : ''} (both websites: all listed pages, basic features, technical setup, launch, 3 months support)`,
   }
 
   for (const site of SITES) {
     const lines = estimate.lines.filter((l) => l.siteId === site.id)
+    const extras = lines.filter((l) => !l.required).length
     const head = `${site.number}. ${site.kind.toUpperCase()} — ${site.name}`
-    p[head] = lines.length ? `${lines.length} extras ticked` : 'Core only — no extras ticked'
+    p[head] = extras ? `${extras} extras ticked` : 'Core + required services only — no extras ticked'
     for (const line of lines) {
-      p[`${site.kind} — ${line.name}`] = `Yes${priceText(line)}`
+      p[`${site.kind} — ${line.name}`] = `${line.required ? 'Required' : 'Yes'}${priceText(line)}`
     }
     p[`NOTES — ${site.kind}`] = orDash(values.notes?.[site.id])
   }

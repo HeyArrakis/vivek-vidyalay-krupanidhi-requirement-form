@@ -337,3 +337,11 @@ body:has(.pricebar) { padding-bottom: calc(84px + env(safe-area-inset-bottom)); 
   .core__toggle { padding: 14px 16px; }
   .core__body { padding: 6px 16px 18px; }
 }
+
+/* Required service: always ticked */
+.row.is-required { cursor: default; background: var(--surface); }
+.row.is-required:hover { background: var(--surface); }
+.row__required {
+  display: inline-block; margin-left: 10px; padding: 2px 7px; vertical-align: 3px;
+  background: var(--ink); color: var(--paper); font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+}
