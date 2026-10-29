@@ -1,4 +1,5 @@
 import { CLIENT, FORM_SUBMIT_EMAIL } from '../config.js'
+import { SITES } from '../services.js'
 import { formatPrice, pricesConfigured } from './pricing.js'
 
 export const FORM_SUBMIT_ACTION = `https://formsubmit.co/${FORM_SUBMIT_EMAIL}`
@@ -13,7 +14,7 @@ const priceText = (l) =>
 
 /**
  * Builds the email payload. Keys are inserted in reading order:
- * CLIENT → SELECTED SERVICES → ESTIMATED INVESTMENT (only if prices are set) → NOTES
+ * CLIENT → per website: its ticked services, then its notes → ESTIMATED INVESTMENT (only if prices are set)
  */
 export function buildSubmission(values, estimate) {
   const p = {
@@ -25,19 +26,23 @@ export function buildSubmission(values, estimate) {
     'FILLED BY': orDash(values.name),
   }
 
-  if (estimate.lines.length === 0) p['SELECTED SERVICES'] = 'Nothing ticked (core website only)'
-  for (const line of estimate.lines) {
-    p[`SELECTED — ${line.name}`] = `Yes${priceText(line)}`
+  for (const site of SITES) {
+    const lines = estimate.lines.filter((l) => l.siteId === site.id)
+    const head = `${site.number}. ${site.kind.toUpperCase()} — ${site.name}`
+    p[head] = lines.length ? `${lines.length} ticked` : 'Nothing ticked'
+    for (const line of lines) {
+      p[`${site.kind} — ${line.name}`] = `Yes${priceText(line)}`
+    }
+    p[`NOTES — ${site.kind}`] = orDash(values.notes?.[site.id])
   }
 
   if (pricesConfigured()) {
     p['ESTIMATED INVESTMENT'] = `${estimate.hasFromPrices ? 'From ' : ''}${formatPrice(estimate.oneTimeTotal)}${
-      estimate.showCore ? ` (incl. complete website revamp ${formatPrice(estimate.coreAmount)})` : ''
+      estimate.showCore ? ` (incl. base websites ${formatPrice(estimate.coreAmount)})` : ''
     }`
     if (estimate.monthlyTotal > 0) p['ESTIMATED INVESTMENT — Monthly'] = `${formatPrice(estimate.monthlyTotal)} / month`
   }
 
-  p['NOTES'] = orDash(values.notes)
   p['Submitted at'] = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) + ' IST'
   return p
 }

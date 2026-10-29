@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { CLIENT } from './config.js'
-import { INCLUDED_NOTE, SECTIONS } from './services.js'
-import { calculateEstimate, formatPrice, priceLabel, pricesConfigured } from './lib/pricing.js'
+import { SITES } from './services.js'
+import { calculateEstimate, coreKey, formatPrice, priceLabel, pricesConfigured } from './lib/pricing.js'
 import { FORM_SUBMIT_ACTION, buildSubmission, sendSubmission } from './lib/submission.js'
 import ChecklistGroup from './components/Checklist.jsx'
 import { CheckMark, Field } from './components/ui.jsx'
@@ -12,7 +12,7 @@ export default function App() {
   const [selection, setSelection] = useState({})
   const [name, setName] = useState('')
   const [nameError, setNameError] = useState('')
-  const [notes, setNotes] = useState('')
+  const [notes, setNotes] = useState({}) // siteId → text
   const [status, setStatus] = useState('idle') // idle | success
   const [delivery, setDelivery] = useState('idle') // idle | sending | sent | failed
   const [submitError, setSubmitError] = useState('')
@@ -24,6 +24,17 @@ export default function App() {
     setSelection((s) => ({ ...s, [groupId]: !s[groupId] }))
     setSubmitError('')
   }
+
+  /** Ticks every service in a section, or clears them all if they're already ticked. */
+  const toggleAll = (groups) => {
+    setSelection((s) => {
+      const allOn = groups.every((g) => s[g.id])
+      return { ...s, ...Object.fromEntries(groups.map((g) => [g.id, !allOn])) }
+    })
+    setSubmitError('')
+  }
+
+  const hasNotes = Object.values(notes).some((n) => n.trim())
 
   // Sending runs in the background: the thank-you page shows instantly and reports
   // delivery (with a retry) once FormSubmit answers.
@@ -47,7 +58,7 @@ export default function App() {
       el?.focus({ preventScroll: true })
       return
     }
-    if (estimate.lines.length === 0 && !notes.trim()) {
+    if (estimate.lines.length === 0 && !hasNotes) {
       setSubmitError('Please tick at least one service (or add a note) before submitting.')
       return
     }
@@ -63,6 +74,7 @@ export default function App() {
   }
 
   const count = estimate.lines.length
+  const siteCount = (siteId) => estimate.lines.filter((l) => l.siteId === siteId).length
 
   return (
     <>
@@ -71,46 +83,96 @@ export default function App() {
         <div className="intro">
           <p className="mono muted">{CLIENT.name} × Sonder</p>
           <h1 className="intro__title">Website requirement checklist</h1>
-          <p className="intro__copy">Tick everything you’d like included in your new website.</p>
-          <div className="intro__note">
-            {priceLabel('coreWebsite') && (
-              <p className="intro__core">
-                <span>Complete website revamp</span>
-                <span className="mono">{priceLabel('coreWebsite')}</span>
-              </p>
-            )}
-            <p>{INCLUDED_NOTE}</p>
-          </div>
+          <p className="intro__copy">One checklist for both of your websites. Tick everything you’d like included in each.</p>
+          <nav className="sites" aria-label="Websites in this checklist">
+            {SITES.map((site) => (
+              <a key={site.id} className="sites__card" href={`#site-${site.id}`}>
+                <span className="mono sites__num">{site.number}</span>
+                <span className="sites__text">
+                  <span className="mono muted">{site.kind}</span>
+                  <span className="sites__name">{site.name}</span>
+                </span>
+                <span className="mono sites__count">{siteCount(site.id)} ticked</span>
+              </a>
+            ))}
+          </nav>
         </div>
 
         <form action={FORM_SUBMIT_ACTION} method="POST" noValidate onSubmit={onSubmit} aria-label="Website requirement checklist">
-          {SECTIONS.map((sec) => (
-            <section key={sec.id} className="group" aria-labelledby={`grp-${sec.id}`}>
-              <h2 id={`grp-${sec.id}`} className="group__title">
-                <span className="mono group__letter" aria-hidden="true">{sec.letter}</span>
-                {sec.title}
-              </h2>
-              {sec.complimentary && (
-                <div className="comp">
-                  <p className="comp__head">
-                    <span className="row__title">{sec.complimentary.title}</span>
-                    <span className="comp__tag mono">{sec.complimentary.label}</span>
-                  </p>
-                  <p className="row__desc">{sec.complimentary.text}</p>
-                  {sec.complimentary.notes.map((n) => (
-                    <p key={n} className="row__note">{n}</p>
-                  ))}
+          {SITES.map((site) => (
+            <section key={site.id} id={`site-${site.id}`} className="site" aria-labelledby={`site-${site.id}-title`}>
+              <div className="site__head">
+                <span className="site__num" aria-hidden="true">{site.number}</span>
+                <div className="site__heading">
+                  <p className="mono site__kind">{site.kind}</p>
+                  <h2 id={`site-${site.id}-title`} className="site__name">{site.name}</h2>
+                  <p className="site__objective">{site.objective}</p>
                 </div>
-              )}
-              <ul className="list">
-                {sec.groups.map((g) => (
-                  <ChecklistGroup key={g.id} group={g} checked={!!selection[g.id]} onToggle={toggle} />
-                ))}
-              </ul>
+              </div>
+              <div className="intro__note">
+                {priceLabel(coreKey(site.id)) && (
+                  <p className="intro__core">
+                    <span>{site.kind}</span>
+                    <span className="mono">{priceLabel(coreKey(site.id))}</span>
+                  </p>
+                )}
+                <p>{site.includedNote}</p>
+              </div>
+
+              {site.sections.map((sec) => (
+                <section key={sec.id} className="group" aria-labelledby={`grp-${sec.id}`}>
+                  <div className="group__title">
+                    <span className="mono group__letter" aria-hidden="true">{sec.letter}</span>
+                    <h3 id={`grp-${sec.id}`} className="group__name">{sec.title}</h3>
+                    {sec.bulk && (
+                      <button type="button" className="group__bulk mono" onClick={() => toggleAll(sec.groups)}>
+                        {sec.groups.every((g) => selection[g.id]) ? 'Clear all' : 'Tick all'}
+                      </button>
+                    )}
+                  </div>
+                  {sec.intro && <p className="group__intro">{sec.intro}</p>}
+                  {sec.complimentary && (
+                    <div className="comp">
+                      <p className="comp__head">
+                        <span className="row__title">{sec.complimentary.title}</span>
+                        <span className="comp__tag mono">{sec.complimentary.label}</span>
+                      </p>
+                      <p className="row__desc">{sec.complimentary.text}</p>
+                      {sec.complimentary.notes.map((n) => (
+                        <p key={n} className="row__note">{n}</p>
+                      ))}
+                    </div>
+                  )}
+                  <ul className="list">
+                    {sec.groups.map((g) => (
+                      <ChecklistGroup key={g.id} group={g} checked={!!selection[g.id]} onToggle={toggle} />
+                    ))}
+                  </ul>
+                </section>
+              ))}
+
+              <div className="group group--notes">
+                <Field
+                  id={`notes-${site.id}`}
+                  label={`Anything else for the ${site.kind.toLowerCase()}?`}
+                  optional
+                  hint="Describe any custom feature, or add other notes for this website."
+                >
+                  {(a11y) => (
+                    <textarea
+                      {...a11y}
+                      name={`notes_${site.id}`}
+                      rows={3}
+                      value={notes[site.id] ?? ''}
+                      onChange={(e) => setNotes((n) => ({ ...n, [site.id]: e.target.value }))}
+                    />
+                  )}
+                </Field>
+              </div>
             </section>
           ))}
 
-          <section className="group group--notes">
+          <section className="group group--notes group--final">
             <Field id="fillerName" label="Your name" required error={nameError}>
               {(a11y) => (
                 <input
@@ -123,11 +185,6 @@ export default function App() {
                     if (nameError && e.target.value.trim()) setNameError('')
                   }}
                 />
-              )}
-            </Field>
-            <Field id="notes" label="Anything else?" optional hint="Describe any custom feature here, or add other notes.">
-              {(a11y) => (
-                <textarea {...a11y} name="notes" rows={3} value={notes} onChange={(e) => setNotes(e.target.value)} />
               )}
             </Field>
           </section>
@@ -171,7 +228,7 @@ function PriceBar({ estimate, count }) {
           </span>
         </div>
         <span className="mono pricebar__meta">
-          {estimate.showCore && <span className="pricebar__core">Website {formatPrice(estimate.coreAmount)} + </span>}
+          {estimate.showCore && <span className="pricebar__core">Websites {formatPrice(estimate.coreAmount)} + </span>}
           {count} {count === 1 ? 'service' : 'services'}
         </span>
       </div>
@@ -187,7 +244,7 @@ function Header() {
           <span className="brand__word">sonder</span>
           <span className="brand__cursor" aria-hidden="true" />
         </span>
-        <span className="pill"><span className="pill__dot" aria-hidden="true" />{CLIENT.name}</span>
+        <span className="pill"><span className="pill__dot" aria-hidden="true" />{CLIENT.shortName}</span>
       </div>
     </header>
   )
@@ -217,13 +274,20 @@ function Success({ estimate, delivery, error, onRetry }) {
         <div className="success__mark" aria-hidden="true"><CheckMark /></div>
         <h1 className="intro__title" tabIndex={-1} ref={titleRef}>Thank you. We’ve received your requirements.</h1>
         <p className="intro__copy">Our team will review your selections and get back to you with the final scope and proposal.</p>
-        {estimate.lines.length > 0 && (
-          <ul className="success__list">
-            {estimate.lines.map((l) => (
-              <li key={l.groupId}><CheckMark /> {l.name}</li>
-            ))}
-          </ul>
-        )}
+        {SITES.map((site) => {
+          const lines = estimate.lines.filter((l) => l.siteId === site.id)
+          if (!lines.length) return null
+          return (
+            <div key={site.id} className="success__site">
+              <p className="mono muted">{site.number}. {site.kind} — {site.name}</p>
+              <ul className="success__list">
+                {lines.map((l) => (
+                  <li key={l.groupId}><CheckMark /> {l.name}</li>
+                ))}
+              </ul>
+            </div>
+          )
+        })}
         <div className="delivery" aria-live="polite">
           {delivery === 'sending' && (
             <p className="delivery__status mono"><span className="spinner spinner--dark" aria-hidden="true" /> Sending to Sonder…</p>

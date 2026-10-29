@@ -44,7 +44,11 @@ export default function ChecklistGroup({ group, checked, onToggle }) {
           <Extras group={group} />
           {group.bonus && <span className="row__bonus mono">+ {group.bonus}</span>}
         </span>
-        {label && <span className="row__price mono">{label}</span>}
+        {label ? (
+          <span className="row__price mono">{label}</span>
+        ) : (
+          group.level && <span className={`row__level mono row__level--${group.level.toLowerCase()}`}>{group.level}</span>
+        )}
       </label>
     </li>
   )

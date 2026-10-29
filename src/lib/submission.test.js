@@ -3,29 +3,35 @@ import { buildSubmission } from './submission.js'
 import { calculateEstimate } from './pricing.js'
 
 describe('email payload', () => {
-  it('lists each ticked service once with its price or label', () => {
-    const est = calculateEstimate({ aiSmartFeatures: true, uiux: true, customFeature: true })
-    const p = buildSubmission({ name: 'Asha Mehta', notes: '' }, est)
-    expect(p.CLIENT).toBe('Devki Technocrats')
+  it('groups ticked services under each website with their notes', () => {
+    const est = calculateEstimate({ school_page_home: true, school_customFeature: true, tuition_demoBooking: true })
+    const p = buildSubmission({ name: 'Asha Mehta', notes: { tuition: 'Two branches' } }, est)
+    expect(p.CLIENT).toBe('Vivek Vidyalay & Krupanidhi English Academy')
     expect(p['FILLED BY']).toBe('Asha Mehta')
-    expect(p['SELECTED — AI & Smart Features']).toBe('Yes — ₹5,000')
-    expect(p['SELECTED — Website UI/UX Design']).toBe('Yes — ₹3,000')
-    expect(p['SELECTED — Custom Website Feature']).toBe('Yes — Quoted separately')
-    expect(p.NOTES).toBe('—')
+    expect(p['1. SCHOOL WEBSITE — Vivek Vidyalay']).toBe('2 ticked')
+    expect(p['School Website — Home Page']).toBe('Yes')
+    expect(p['School Website — Custom School Feature']).toBe('Yes — Quoted separately')
+    expect(p['2. TUITION CLASSES WEBSITE — Krupanidhi English Academy']).toBe('1 ticked')
+    expect(p['Tuition Classes Website — Demo Class Booking']).toBe('Yes')
+    expect(p['NOTES — School Website']).toBe('—')
+    expect(p['NOTES — Tuition Classes Website']).toBe('Two branches')
   })
 
-  it('says when nothing is ticked', () => {
-    expect(buildSubmission({ notes: '' }, calculateEstimate({}))['SELECTED SERVICES']).toMatch(/Nothing ticked/)
+  it('keeps the school before the tuition classes in the email', () => {
+    const keys = Object.keys(buildSubmission({}, calculateEstimate({ tuition_page_home: true, school_page_home: true })))
+    expect(keys.indexOf('School Website — Home Page')).toBeLessThan(keys.indexOf('Tuition Classes Website — Home Page'))
   })
 
-  it('totals the core website plus each ticked service once', () => {
-    const est = calculateEstimate({ businessShowcase: true, branding: true, localSEO: true, advancedSEO: true, supportAfter6Months: true })
-    expect(est.oneTimeTotal).toBe(20000 + 4000 + 2000 + 1000)
-    expect(buildSubmission({ notes: 'Hi' }, est)['ESTIMATED INVESTMENT']).toBe('₹27,000 (incl. complete website revamp ₹20,000)')
+  it('says when nothing is ticked for a website', () => {
+    expect(buildSubmission({}, calculateEstimate({}))['1. SCHOOL WEBSITE — Vivek Vidyalay']).toBe('Nothing ticked')
+  })
+
+  it('leaves out the estimate while no prices are set', () => {
+    expect(buildSubmission({}, calculateEstimate({ school_page_home: true }))).not.toHaveProperty('ESTIMATED INVESTMENT')
   })
 
   it('ignores unticked services', () => {
-    expect(calculateEstimate({ businessShowcase: false }).lines).toHaveLength(0)
+    expect(calculateEstimate({ school_page_home: false }).lines).toHaveLength(0)
   })
 })
 
@@ -53,13 +59,13 @@ describe('request format', () => {
       return new Response(JSON.stringify({ success: 'true' }), { status: 200 })
     }
     try {
-      await sendSubmission({ CLIENT: 'Devki Technocrats', NOTES: '—' })
+      await sendSubmission({ CLIENT: 'Vivek Vidyalay & Krupanidhi English Academy', NOTES: '—' })
     } finally {
       globalThis.fetch = original
     }
     expect(seen.url).toBe('https://formsubmit.co/ajax/heyarrakis@gmail.com')
     expect(seen.opts.body).toBeInstanceOf(URLSearchParams)
-    expect(seen.opts.body.get('CLIENT')).toBe('Devki Technocrats')
+    expect(seen.opts.body.get('CLIENT')).toBe('Vivek Vidyalay & Krupanidhi English Academy')
     expect(seen.opts.headers).toEqual({ Accept: 'application/json' })
     expect(seen.opts.keepalive).toBe(true)
   })

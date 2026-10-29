@@ -1,9 +1,14 @@
-# Devki Technocrats × Sonder — Website Requirement Form
+# Vivek Vidyalay & Krupanidhi English Academy × Sonder — Website Requirement Form
 
 A simple, single-page **website requirement checklist** prepared by
-[Sonder AI Agency](https://sonderai.agency/) for Devki Technocrats.
+[Sonder AI Agency](https://sonderai.agency/) for one client with two websites:
 
-The client ticks the services they want, optionally adds a note, and submits.
+1. **School website — Vivek Vidyalay**
+2. **Tuition classes website — Krupanidhi English Academy**
+
+Each website has its own section with sub-sections: **A** Website Pages, **B** Features &
+Modules, **C** Branding, Design & Content, **D** Online Growth, **E** After Launch.
+The client ticks the services they want for each website, optionally adds a note per website, and submits.
 Prices and an estimated total appear only once prices are filled in (see below). The completed form is emailed to Sonder via
 [FormSubmit](https://formsubmit.co) — there is no backend.
 
@@ -51,18 +56,17 @@ in the page source.
 
 ### 2. Prices
 
+Prices are **not set yet**, so the page is a plain checklist (no prices, totals or price bar).
+Feature rows show a complexity tag instead (Basic / Standard / Advanced / Custom).
+Add amounts in `PRICING` once they're confirmed:
+
 ```js
 export const PRICING = {
-  coreWebsite: { amount: 20000 },
-  branding: { amount: 2000 },
-  uiux: { amount: 3000 },
-  contentImageUpgrade: { amount: null, label: 'Free with your content', rates: [...] },
-  businessShowcase: { amount: 4000 },
-  customFeature: { amount: null, label: 'Quoted separately' },
-  aiSmartFeatures: { amount: 5000 },
-  localSEO: { amount: 1000 },
-  advancedSEO: { amount: null, label: 'Priced on your goals' },
-  supportAfter6Months: { amount: null, label: 'Quoted separately' },
+  schoolWebsite: { amount: 30000 },          // base school website
+  tuitionWebsite: { amount: 20000 },         // base tuition classes website
+  school_page_gallery: { amount: 1500 },
+  school_feePayment: { amount: 12000, type: 'from' },
+  tuition_lms: { amount: null, label: 'Quoted separately' },
 }
 ```
 
@@ -71,29 +75,19 @@ export const PRICING = {
 | `amount` | Price in rupees, counted in the estimate when ticked. `null` = not counted. |
 | `label`  | Text shown instead of a price when `amount` is `null` |
 | `type`   | Optional `'from'` to show "From ₹4,000" |
-| `rates`  | Optional per-unit rates listed under the service (used for content & images) |
+| `rates`  | Optional per-unit rates listed under the service |
 
-The estimate = complete website revamp + each ticked priced group (once per group).
-
-### 3. Pricing logic (group-based)
-
-Each service is a single checkbox. Grouped services list what they include and are charged once:
-
-| Service | Includes | Price |
-|-------|---------|-------|
-| Logo & Brand Identity | Logo design / redesign, Brand identity (+ brand guidelines included) | ₹2,000 |
-| Website UI/UX Design | (+ visual content design included, first iteration only) | ₹3,000 |
-| Business Showcase | Services & capabilities, Projects & portfolio, Quality & certifications, Company profile PDF | ₹4,000 |
-| AI & Smart Features | AI Website Assistant, AI Enquiry / RFQ Assistant, Automated Email Response, AI Quotation Assistant | ₹5,000 |
-
+The estimate = both base websites + each ticked priced service (once per service).
+As soon as any amount is set, prices and the fixed price bar appear.
 `src/lib/pricing.test.js` and `src/lib/submission.test.js` cover this.
 
-### 4. Services & copy
+### 3. Services & copy
 
-The checklist items, what each grouped service `includes`, and the "already included" line are
-in `src/services.js`. Each service's `id` must match a key in `PRICING`.
+Both websites, their sub-sections, every checklist item and the "already included" line are in
+`src/services.js`. Service ids are prefixed `school_` or `tuition_` so they stay unique; each id
+is the key used in `PRICING`.
 
-### 5. Client details
+### 4. Client details
 
 `CLIENT` in `src/config.js` sets the client name shown on the page and in the email.
 
@@ -101,9 +95,9 @@ in `src/services.js`. Each service's `id` must match a key in `PRICING`.
 
 ## The email Sonder receives
 
-FormSubmit's `box` template, in this order: **CLIENT** (company name) →
-**SELECTED** services with their price → **ESTIMATED INVESTMENT** (only once prices
-are set) → **NOTES**.
+FormSubmit's `box` template, in this order: **CLIENT** → **FILLED BY** →
+**1. School website** (ticked services, then its notes) → **2. Tuition classes website**
+(ticked services, then its notes) → **ESTIMATED INVESTMENT** (only once prices are set).
 
 ---
 
@@ -115,7 +109,7 @@ The workflow in `.github/workflows/deploy.yml` tests, builds and deploys on ever
 1. Push this repository to GitHub.
 2. In the repo: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
 3. Push to `main` (or run the workflow manually from the **Actions** tab).
-4. The site is published at `https://<github-username>.github.io/devki-technocrats-requirement-form/`.
+4. The site is published at `https://<github-username>.github.io/vivek-vidyalay-krupanidhi-requirement-form/`.
 
 `vite.config.js` uses `base: './'`, so the build works under any repository name.
 
@@ -126,7 +120,7 @@ The workflow in `.github/workflows/deploy.yml` tests, builds and deploys on ever
 ```
 src/
   config.js            ← email, client, prices (edit here)
-  services.js          ← service catalogue & copy
+  services.js          ← both websites' checklists & copy
   App.jsx              ← page, state, validation, submit
   components/          ← checklist rows and form primitives
   lib/pricing.js       ← group-based estimate (+ tests)

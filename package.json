@@ -1,8 +1,8 @@
 {
-  "name": "devki-technocrats-requirement-form",
+  "name": "vivek-vidyalay-krupanidhi-requirement-form",
   "private": true,
   "version": "1.0.0",
-  "description": "Website requirement & service selection form for Devki Technocrats, by Sonder AI Agency.",
+  "description": "Website requirement & service selection form for Vivek Vidyalay & Krupanidhi English Academy, by Sonder AI Agency.",
   "type": "module",
   "scripts": {
     "dev": "vite",

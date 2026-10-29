@@ -1,5 +1,5 @@
 import { CURRENCY, PRICING } from '../config.js'
-import { ALL_GROUPS } from '../services.js'
+import { ALL_GROUPS, SITES } from '../services.js'
 
 const formatter = new Intl.NumberFormat(CURRENCY.locale, {
   style: 'currency',
@@ -14,6 +14,9 @@ const hasAmount = (p) => p != null && p.amount != null
 /** True once at least one price has been filled in — otherwise no prices or totals are shown. */
 export const pricesConfigured = (pricing = PRICING) => Object.values(pricing).some(hasAmount)
 
+/** PRICING key of a website's base price, e.g. "schoolWebsite". */
+export const coreKey = (siteId) => `${siteId}Website`
+
 /** "₹4,000", "From ₹4,000", "₹1,000 / month", or the entry's text label (e.g. "Quoted separately"). */
 export function priceLabel(groupId, pricing = PRICING) {
   const p = pricing[groupId]
@@ -23,19 +26,20 @@ export function priceLabel(groupId, pricing = PRICING) {
 }
 
 /**
- * Estimate from ticked services.
+ * Estimate from ticked services across both websites.
  *
  * `selection` maps groupId → true when that service is ticked. Each service is
- * one checkbox, so a grouped service (e.g. Business Showcase) is charged once.
- * Services without an amount add nothing.
+ * one checkbox, so a grouped service (e.g. Logo & Brand Identity) is charged once.
+ * Services without an amount add nothing. Each website's base price is always counted.
  */
-export function calculateEstimate(selection, { pricing = PRICING, groups = ALL_GROUPS } = {}) {
+export function calculateEstimate(selection, { pricing = PRICING, groups = ALL_GROUPS, sites = SITES } = {}) {
   const lines = []
   for (const group of groups) {
     if (!selection[group.id]) continue
     const p = pricing[group.id]
     lines.push({
       groupId: group.id,
+      siteId: group.siteId,
       name: group.name,
       amount: hasAmount(p) ? p.amount : null,
       label: p?.label ?? '',
@@ -44,8 +48,8 @@ export function calculateEstimate(selection, { pricing = PRICING, groups = ALL_G
     })
   }
 
-  const core = pricing.coreWebsite
-  const coreAmount = hasAmount(core) ? core.amount : 0
+  const cores = sites.map((s) => pricing[coreKey(s.id)]).filter(hasAmount)
+  const coreAmount = cores.reduce((t, c) => t + c.amount, 0)
   const priced = lines.filter((l) => l.amount != null)
   const sum = (ls) => ls.reduce((t, l) => t + l.amount, 0)
   const oneTime = priced.filter((l) => l.billing !== 'monthly')
@@ -53,11 +57,11 @@ export function calculateEstimate(selection, { pricing = PRICING, groups = ALL_G
 
   return {
     lines,
-    showCore: hasAmount(core),
+    showCore: cores.length > 0,
     coreAmount,
     addOnsTotal: sum(oneTime),
     oneTimeTotal: coreAmount + sum(oneTime),
     monthlyTotal: sum(monthly),
-    hasFromPrices: priced.some((l) => l.type === 'from') || (hasAmount(core) && core.type === 'from'),
+    hasFromPrices: priced.some((l) => l.type === 'from') || cores.some((c) => c.type === 'from'),
   }
 }
