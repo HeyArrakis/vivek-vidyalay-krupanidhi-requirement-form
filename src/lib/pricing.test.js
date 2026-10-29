@@ -44,13 +44,13 @@ describe('pricing', () => {
     expect(e.extras).toHaveLength(0)
   })
 
-  it('reduces from the market price of core and ticked services only', () => {
+  it('reduces from our usual price of core and ticked services only', () => {
     const e = calculateEstimate(
       { school_branding: true },
-      { pricing: { ...pricing, school_core: { amount: 30000, market: 32500 }, school_branding: { amount: 3000, market: 4000 }, tuition_branding: { amount: 3000, market: 9000 } }, groups, sites },
+      { pricing: { ...pricing, school_core: { amount: 30000, usual: 32500 }, school_branding: { amount: 3000, usual: 4000 }, tuition_branding: { amount: 3000, usual: 9000 } }, groups, sites },
     )
     expect(e.reduction).toBe(2500 + 1000)
-    expect(e.marketTotal).toBe(e.oneTimeTotal + 3500)
+    expect(e.usualTotal).toBe(e.oneTimeTotal + 3500)
     expect(est({}).reduction).toBe(0)
   })
 

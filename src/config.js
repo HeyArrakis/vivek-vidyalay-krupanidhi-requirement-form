@@ -41,7 +41,7 @@ export const CURRENCY = {
  *            null = not counted; shows `label` instead (e.g. "Quoted separately").
  *   type   — optional: 'from' shows "From ₹4,000" (default: fixed price)
  *   label  — text shown when there is no amount
- *   market — optional usual market price. Never shown next to the service; the total shows
+ *   usual  — optional: what we usually charge. Never shown next to the service; the total shows
  *            the difference as "Already Reduced"
  *   rates  — optional per-unit rates listed under the service
  *
@@ -50,9 +50,9 @@ export const CURRENCY = {
 export const PRICING = {
   // Core website development, per website (always included, not a checkbox):
   // all listed pages, basic features, technical setup, launch, 3 months support.
-  // `market` is what this usually costs: ₹2,500 above our price on each website = ₹5,000 reduced.
-  school_core: { amount: 30000, market: 32500 },
-  tuition_core: { amount: 30000, market: 32500 },
+  // `usual` is what we usually charge: ₹40,000, so ₹10,000 is reduced on each website (₹20,000 for both).
+  school_core: { amount: 30000, usual: 40000 },
+  tuition_core: { amount: 30000, usual: 40000 },
 
   // Website UI/UX Design — required for every website, always counted (not core)
   school_uiux: { amount: 5000 },

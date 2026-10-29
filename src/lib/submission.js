@@ -44,7 +44,7 @@ export function buildSubmission(values, estimate) {
       estimate.showCore ? ` (incl. core development ${formatPrice(estimate.coreAmount)} for both websites; “Quoted separately” items not included)` : ''
     }`
     if (estimate.reduction > 0) {
-      p['ALREADY REDUCED'] = `${formatPrice(estimate.reduction)} below the usual market price of ${formatPrice(estimate.marketTotal)}`
+      p['ALREADY REDUCED'] = `${formatPrice(estimate.reduction)} below our usual price of ${formatPrice(estimate.usualTotal)}`
     }
     p['COMPLIMENTARY VALUE'] = `${formatPrice(estimate.complimentaryValue)} paid by us (domain for 3 years + cloud hosting for 1 year, both websites) — not charged`
     if (estimate.monthlyTotal > 0) p['ESTIMATED INVESTMENT — Monthly'] = `${formatPrice(estimate.monthlyTotal)} / month`

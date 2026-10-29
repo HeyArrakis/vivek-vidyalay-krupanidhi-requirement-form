@@ -21,8 +21,8 @@ Each website then has, in this order:
 4. **C. More features — price after a quick talk** — everything quoted separately, last.
 
 The total bar is always visible: ₹70,000 to start, ₹90,000 with every priced extra on both websites.
-A "Your Total" summary at the end starts from the usual market price, shows the full value crossed out
-(including ₹24,200 of domain and hosting we pay for), takes off "Our Lower Price — Already Reduced" (₹5,000)
+A "Your Total" summary at the end starts from our usual price (₹40,000 per core website), shows the full value crossed out
+(including ₹24,200 of domain and hosting we pay for), takes off "Already Reduced for You" (₹10,000 per website, ₹20,000 for both)
 and "We Pay for You", then "You Pay".
 
 ---
@@ -86,7 +86,7 @@ export const PRICING = {
 | `amount` | Price in rupees, counted in the estimate when ticked. `null` = not counted. |
 | `label`  | Text shown instead of a price when `amount` is `null` |
 | `type`   | Optional `'from'` to show "From ₹4,000" |
-| `market` | Optional usual market price. Never shown on the service; the total shows the difference as "Already Reduced" (core is ₹32,500 per website = ₹5,000 reduced) |
+| `usual`  | Optional: what we usually charge. Never shown on the service; the total shows the difference as "Already Reduced" (core is ₹40,000 usually, ₹30,000 here = ₹10,000 reduced per website) |
 
 The estimate = each website's core + required UI/UX + each ticked priced service: ₹70,000 minimum,
 ₹90,000 with every priced service ticked for both websites. Standard / Advanced / Custom
