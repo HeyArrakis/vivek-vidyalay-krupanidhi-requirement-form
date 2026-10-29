@@ -415,3 +415,12 @@ body:has(.pricebar) { padding-bottom: calc(84px + env(safe-area-inset-bottom)); 
   .summary__row dd { white-space: normal; }
   .wasfree { white-space: normal; }
 }
+
+/* Failed send: big, plain actions */
+.delivery__status { font-size: 18px; }
+.delivery__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.btn--whatsapp { background: #128c4a; border-color: #128c4a; color: #fff; text-decoration: none; }
+.btn--whatsapp:hover { color: #fff; }
+@media (max-width: 600px) {
+  .delivery__actions .btn { width: 100%; }
+}

@@ -15,6 +15,13 @@
 export const FORM_SUBMIT_EMAIL =
   import.meta.env.VITE_FORM_SUBMIT_EMAIL || 'heyarrakis@gmail.com'
 
+/**
+ * Backup if the email service is down: a "Send on WhatsApp" button opens WhatsApp with the
+ * whole checklist already written. Digits only, with country code, e.g. '919812345678'.
+ * Leave empty to hide the button.
+ */
+export const WHATSAPP_NUMBER = ''
+
 /** Client details shown across the page and in the email. One client, two websites. */
 export const CLIENT = {
   name: 'Vivek Vidyalay & Krupanidhi English Academy',

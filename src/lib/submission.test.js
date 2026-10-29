@@ -67,7 +67,7 @@ describe('sending', () => {
     globalThis.fetch = async () =>
       new Response(JSON.stringify({ success: 'false', message: 'This form needs Activation.' }), { status: 200 })
     try {
-      await expect(sendSubmission({})).rejects.toThrow(/being activated/)
+      await expect(sendSubmission({}, { waits: [] })).rejects.toThrow(/being set up/)
     } finally {
       globalThis.fetch = original
     }
@@ -93,5 +93,45 @@ describe('request format', () => {
     expect(seen.opts.body.get('CLIENT')).toBe('Vivek Vidyalay & Krupanidhi English Academy')
     expect(seen.opts.headers).toEqual({ Accept: 'application/json' })
     expect(seen.opts.keepalive).toBe(true)
+  })
+})
+
+describe('outages', () => {
+  it('retries when the email service is down, then succeeds', async () => {
+    const { sendSubmission } = await import('./submission.js')
+    const original = globalThis.fetch
+    let calls = 0
+    globalThis.fetch = async () => {
+      calls++
+      if (calls < 3) return new Response('error code: 521', { status: 521 })
+      return new Response(JSON.stringify({ success: 'true' }), { status: 200 })
+    }
+    try {
+      await expect(sendSubmission({}, { waits: [0, 0] })).resolves.toEqual({ success: 'true' })
+    } finally {
+      globalThis.fetch = original
+    }
+    expect(calls).toBe(3)
+  })
+
+  it('gives a friendly message when the service stays down', async () => {
+    const { sendSubmission } = await import('./submission.js')
+    const original = globalThis.fetch
+    globalThis.fetch = async () => {
+      throw new TypeError('Failed to fetch')
+    }
+    try {
+      await expect(sendSubmission({}, { waits: [0] })).rejects.toThrow(/choices are saved/)
+    } finally {
+      globalThis.fetch = original
+    }
+  })
+
+  it('builds a WhatsApp link with the checklist, only when a number is set', async () => {
+    const { whatsappLink } = await import('./submission.js')
+    expect(whatsappLink({ CLIENT: 'X' }, '')).toBe('')
+    const link = whatsappLink({ _subject: 'hidden', CLIENT: 'X', NOTES: 'Hi' }, '919800000000')
+    expect(link).toMatch(/^https:\/\/wa\.me\/919800000000\?text=/)
+    expect(decodeURIComponent(link.split('text=')[1])).toBe('CLIENT: X\nNOTES: Hi')
   })
 })

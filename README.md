@@ -53,6 +53,12 @@ repository variable named `FORM_SUBMIT_EMAIL`
 (*Settings → Secrets and variables → Actions → Variables*) — the deploy workflow passes it in
 at build time.
 
+**If FormSubmit is down** (it returns Cloudflare "error 521" when its servers are offline), the
+form retries automatically twice, then shows "Your Checklist Is Not Sent Yet" with **Try Again**.
+Ticks, notes and name are saved on the visitor's phone, so nothing is lost. Set
+`WHATSAPP_NUMBER` in `src/config.js` (digits with country code) to also show a
+**Send on WhatsApp Instead** button that opens WhatsApp with the whole checklist typed out.
+
 **One-time FormSubmit activation:** the very first submission to a new address does not get
 delivered — FormSubmit emails that address an *“Activate Form”* link instead. Submit one test
 entry from the live site, click the link in the activation email, and every submission after

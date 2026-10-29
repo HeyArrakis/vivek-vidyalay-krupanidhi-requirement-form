@@ -2,23 +2,45 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { CLIENT } from './config.js'
 import { COMPLIMENTARY, COMPLIMENTARY_CONDITION, CORE, LEVELS, SITES, coreKey, coreSections, coreTotal } from './services.js'
 import { calculateEstimate, formatPrice, priceLabel, pricesConfigured } from './lib/pricing.js'
-import { FORM_SUBMIT_ACTION, buildSubmission, sendSubmission } from './lib/submission.js'
+import { FORM_SUBMIT_ACTION, buildSubmission, sendSubmission, whatsappLink } from './lib/submission.js'
 import ChecklistGroup from './components/Checklist.jsx'
 import { CheckMark, Field } from './components/ui.jsx'
 
 const SHOW_PRICES = pricesConfigured()
 
+// Ticks, notes and name are kept on the visitor's phone, so a refresh or a failed send loses nothing.
+const DRAFT_KEY = 'checklist-draft'
+const saved = (() => {
+  try {
+    return JSON.parse(localStorage.getItem(DRAFT_KEY)) ?? {}
+  } catch {
+    return {}
+  }
+})()
+const saveDraft = (draft) => {
+  try {
+    if (draft) localStorage.setItem(DRAFT_KEY, JSON.stringify(draft))
+    else localStorage.removeItem(DRAFT_KEY)
+  } catch {
+    // Private mode or blocked storage: the form still works, it just won't remember.
+  }
+}
+
 export default function App() {
-  const [selection, setSelection] = useState({})
-  const [name, setName] = useState('')
+  const [selection, setSelection] = useState(saved.selection ?? {})
+  const [name, setName] = useState(saved.name ?? '')
   const [nameError, setNameError] = useState('')
-  const [notes, setNotes] = useState({}) // siteId → text
+  const [notes, setNotes] = useState(saved.notes ?? {}) // siteId → text
   const [status, setStatus] = useState('idle') // idle | success
   const [delivery, setDelivery] = useState('idle') // idle | sending | sent | failed
   const [submitError, setSubmitError] = useState('')
   const [sent, setSent] = useState(null)
 
   const estimate = useMemo(() => calculateEstimate(selection), [selection])
+
+  useEffect(() => {
+    if (delivery !== 'sent') saveDraft({ selection, notes, name })
+  }, [selection, notes, name, delivery])
 
   const toggle = (groupId) => {
     setSelection((s) => ({ ...s, [groupId]: !s[groupId] }))
@@ -39,7 +61,10 @@ export default function App() {
   const deliver = (payload) => {
     setDelivery('sending')
     sendSubmission(payload)
-      .then(() => setDelivery('sent'))
+      .then(() => {
+        setDelivery('sent')
+        saveDraft(null)
+      })
       .catch((err) => {
         setDelivery('failed')
         setSubmitError(err.message)
@@ -64,7 +89,16 @@ export default function App() {
   }
 
   if (status === 'success' && sent) {
-    return <Success estimate={sent.estimate} delivery={delivery} error={submitError} onRetry={() => deliver(sent.payload)} />
+    return (
+      <Success
+        estimate={sent.estimate}
+        delivery={delivery}
+        error={submitError}
+        onRetry={() => deliver(sent.payload)}
+        onBack={() => setStatus('idle')}
+        whatsapp={whatsappLink(sent.payload)}
+      />
+    )
   }
 
   const count = estimate.extras.length
@@ -391,7 +425,14 @@ function Footer() {
   )
 }
 
-function Success({ estimate, delivery, error, onRetry }) {
+const HEADINGS = {
+  sending: ['Sending Your Checklist…', 'Please keep this page open for a moment.'],
+  sent: ['Thank You! We Got Your Checklist.', 'We’ll look at what you chose and call you soon.'],
+  failed: ['Your Checklist Is Not Sent Yet', 'Nothing is lost — your choices are saved on this phone.'],
+}
+
+function Success({ estimate, delivery, error, onRetry, onBack, whatsapp }) {
+  const [title, copy] = HEADINGS[delivery] ?? HEADINGS.sending
   const titleRef = useRef(null)
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' })
@@ -401,9 +442,29 @@ function Success({ estimate, delivery, error, onRetry }) {
     <>
       <Header />
       <main className="wrap page success">
-        <div className="success__mark" aria-hidden="true"><CheckMark /></div>
-        <h1 className="intro__title" tabIndex={-1} ref={titleRef}>Thank You! We Got Your Checklist.</h1>
-        <p className="intro__copy">We’ll look at what you chose and call you soon.</p>
+        {delivery === 'sent' && <div className="success__mark" aria-hidden="true"><CheckMark /></div>}
+        <h1 className="intro__title" tabIndex={-1} ref={titleRef}>{title}</h1>
+        <p className="intro__copy">{copy}</p>
+        <div className="delivery" aria-live="polite">
+          {delivery === 'sending' && (
+            <p className="delivery__status"><span className="spinner spinner--dark" aria-hidden="true" /> Sending to Sonder… this can take up to a minute.</p>
+          )}
+          {delivery === 'sent' && <p className="delivery__status delivery__status--ok"><CheckMark /> Delivered to Sonder</p>}
+          {delivery === 'failed' && (
+            <div className="delivery__failed">
+              <p className="form-error">{error}</p>
+              <div className="delivery__actions">
+                <button type="button" className="btn btn--primary" onClick={onRetry}>Try Again</button>
+                <button type="button" className="btn" onClick={onBack}>Back to the Checklist</button>
+                {whatsapp && (
+                  <a className="btn btn--whatsapp" href={whatsapp} target="_blank" rel="noopener noreferrer">
+                    Send on WhatsApp Instead
+                  </a>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
         {SITES.map((site) => {
           const lines = estimate.lines.filter((l) => l.siteId === site.id)
           if (!lines.length) return null
@@ -419,18 +480,6 @@ function Success({ estimate, delivery, error, onRetry }) {
             </div>
           )
         })}
-        <div className="delivery" aria-live="polite">
-          {delivery === 'sending' && (
-            <p className="delivery__status mono"><span className="spinner spinner--dark" aria-hidden="true" /> Sending to Sonder…</p>
-          )}
-          {delivery === 'sent' && <p className="delivery__status delivery__status--ok mono"><CheckMark /> Delivered to Sonder</p>}
-          {delivery === 'failed' && (
-            <div className="delivery__failed">
-              <p className="form-error">{error}</p>
-              <button type="button" className="btn btn--primary" onClick={onRetry}>Try again</button>
-            </div>
-          )}
-        </div>
       </main>
       <Footer />
     </>
