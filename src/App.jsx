@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { CLIENT } from './config.js'
-import { CORE, GIFTS, LEVELS, SITES, coreKey, coreSections, coreTotal } from './services.js'
+import { CORE, COMPLIMENTARY, LEVELS, SITES, coreKey, coreSections, coreTotal } from './services.js'
 import { calculateEstimate, formatPrice, priceLabel, pricesConfigured } from './lib/pricing.js'
 import { FORM_SUBMIT_ACTION, buildSubmission, sendSubmission } from './lib/submission.js'
 import ChecklistGroup from './components/Checklist.jsx'
@@ -76,13 +76,13 @@ export default function App() {
       <main className="wrap page">
         <div className="intro">
           <p className="mono muted">{CLIENT.name} × Sonder</p>
-          <h1 className="intro__title">Your website checklist</h1>
-          <p className="intro__copy">Two new websites — one for the school, one for the academy.</p>
-          <GiftBanner />
+          <h1 className="intro__title">Your Website Checklist</h1>
+          <p className="intro__copy">Two New Websites — One for the School, One for the Academy</p>
+          <ComplimentaryBanner />
           <ol className="steps" aria-label="How to fill this checklist">
-            <li><span className="steps__num">1</span><span>See what you get</span></li>
-            <li><span className="steps__num">2</span><span>Tick <span className="steps__tick">✓</span> what you want</span></li>
-            <li><span className="steps__num">3</span><span>Write your name & send</span></li>
+            <li><span className="steps__num">1</span><span>See What You Get</span></li>
+            <li><span className="steps__num">2</span><span>Tick <span className="steps__tick">✓</span> What You Want</span></li>
+            <li><span className="steps__num">3</span><span>Write Your Name & Send</span></li>
           </ol>
           <nav className="sites" aria-label="Websites in this checklist">
             {SITES.map((site) => (
@@ -123,7 +123,7 @@ export default function App() {
                     {sec.intro && <p className="group__intro">{sec.intro}</p>}
                     {sec.recommended && (
                       <button type="button" className={`addall ${allOn ? 'is-on' : ''}`} onClick={() => toggleAll(sec.groups)}>
-                        {allOn ? `✓ All ${sec.groups.length} added` : `+ Add all ${sec.groups.length}`}
+                        {allOn ? `✓ All ${sec.groups.length} Added` : `+ Add All ${sec.groups.length}`}
                       </button>
                     )}
                     {sec.groups.some((g) => g.level) ? (
@@ -155,7 +155,7 @@ export default function App() {
               <div className="group group--notes">
                 <Field
                   id={`notes-${site.id}`}
-                  label="Anything else you want?"
+                  label="Anything Else You Want?"
                   optional
                   hint="Write in your own words — English, Hindi or Gujarati is fine."
                 >
@@ -174,7 +174,7 @@ export default function App() {
           ))}
 
           <section className="group group--notes group--final">
-            <Field id="fillerName" label="Your name" required error={nameError}>
+            <Field id="fillerName" label="Your Name" required error={nameError}>
               {(a11y) => (
                 <input
                   {...a11y}
@@ -193,7 +193,7 @@ export default function App() {
           <div className="submit">
             {SHOW_PRICES && (
               <p className="submit__note">
-                This total is an estimate. Items under “price after a quick talk” are not in it. We’ll confirm the final price when we
+                This total is an estimate. Items under “Price After a Quick Talk” are not in it. We’ll confirm the final price when we
                 meet.
               </p>
             )}
@@ -215,15 +215,15 @@ export default function App() {
   )
 }
 
-/** Free gifts from Sonder — blue, at the top, so they're seen straight away. */
-function GiftBanner() {
+/** Complimentary from Sonder — blue, at the top, so it's seen straight away. */
+function ComplimentaryBanner() {
   return (
-    <div className="giftbanner" role="note">
-      <span className="giftbanner__icon" aria-hidden="true">🎁</span>
+    <div className="compbanner" role="note">
+      <span className="compbanner__icon" aria-hidden="true">🎁</span>
       <div>
-        <p className="giftbanner__title">Free gifts from Sonder — for both websites</p>
-        <ul className="giftbanner__list">
-          {GIFTS.map((g) => (
+        <p className="compbanner__title">Complimentary From Sonder — For Both Websites</p>
+        <ul className="compbanner__list">
+          {COMPLIMENTARY.map((g) => (
             <li key={g.name}>✓ {g.name}</li>
           ))}
         </ul>
@@ -246,11 +246,11 @@ function CorePackage({ site }) {
         {price && <p className="core__price">{price}</p>}
       </div>
       <p className="core__summary">
-        <strong>{coreTotal(site)} things</strong> included in one price:
+        <strong>{coreTotal(site)} Things Included</strong> in One Price:
       </p>
       <ul className="counts">
         {sections.map((sec) => (
-          <li key={sec.label} className={`counts__item ${sec.gift ? 'is-gift' : ''}`}>
+          <li key={sec.label} className={`counts__item ${sec.complimentary ? 'is-comp' : ''}`}>
             <span className="counts__icon" aria-hidden="true">{sec.icon}</span>
             <span className="counts__value">{sec.count}</span>
             <span className="counts__label">{sec.label}</span>
@@ -259,14 +259,14 @@ function CorePackage({ site }) {
       </ul>
       <details className="core__details">
         <summary className="core__toggle">
-          <span className="core__toggle-open">👇 Tap to see the full list</span>
-          <span className="core__toggle-close">Hide the list</span>
+          <span className="core__toggle-open">👇 Tap to See the Full List</span>
+          <span className="core__toggle-close">Hide the List</span>
         </summary>
         <div className="core__body">
           {sections.map((sec) => (
-            <div key={sec.label} className={`core__section ${sec.gift ? 'is-gift' : ''}`}>
+            <div key={sec.label} className={`core__section ${sec.complimentary ? 'is-comp' : ''}`}>
               <p className="core__section-title">
-                <span aria-hidden="true">{sec.icon}</span> {sec.count} {sec.label.toLowerCase()}
+                <span aria-hidden="true">{sec.icon}</span> {sec.count} {sec.label}
               </p>
               <ul className="core__list">
                 {sec.items.map((i) => (
@@ -346,7 +346,7 @@ function Success({ estimate, delivery, error, onRetry }) {
       <Header />
       <main className="wrap page success">
         <div className="success__mark" aria-hidden="true"><CheckMark /></div>
-        <h1 className="intro__title" tabIndex={-1} ref={titleRef}>Thank you! We got your checklist.</h1>
+        <h1 className="intro__title" tabIndex={-1} ref={titleRef}>Thank You! We Got Your Checklist.</h1>
         <p className="intro__copy">We’ll look at what you chose and call you soon.</p>
         {SITES.map((site) => {
           const lines = estimate.lines.filter((l) => l.siteId === site.id)

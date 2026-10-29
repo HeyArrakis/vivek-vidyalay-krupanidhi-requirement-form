@@ -21,7 +21,7 @@ describe('email payload', () => {
     expect(p['School Website — Website Look & Design']).toBe('Required — ₹5,000')
     expect(p['Tuition Classes Website — Website Look & Design']).toBe('Required — ₹5,000')
     expect(p['School Website — New Logo & School Colours']).toBe('Yes — ₹5,000')
-    expect(p['School Website — Login for parents, students & teachers']).toBe('Yes — Quoted separately')
+    expect(p['School Website — Login for Parents, Students & Teachers']).toBe('Yes — Quoted separately')
     expect(p['Tuition Classes Website — Show Up on Google Maps']).toBe('Yes — ₹2,000')
     expect(p['NOTES — School Website']).toBe('—')
     expect(p['NOTES — Tuition Classes Website']).toBe('Two branches')

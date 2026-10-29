@@ -7,13 +7,13 @@ A simple, single-page **website requirement checklist** prepared by
 2. **Tuition classes website — Krupanidhi English Academy**
 
 Written for a non-technical reader: plain words, icons and big counters instead of long text.
-A blue **free gifts** banner sits at the top (free domain for the 1st year, free care & support for
+A blue **Complimentary** banner sits at the top (domain for the 1st year, care & support for
 3 months, for both websites).
 
 Each website then has, in this order:
 
-1. **Your Complete Website — ₹30,000**: counters (pages, ready-made features, setup jobs, free
-   gifts) and a "Tap to see the full list" dropdown.
+1. **Your Complete Website — ₹30,000**: counters (pages, ready-made features, setup jobs,
+   complimentary) and a "Tap to See the Full List" dropdown.
 2. **A. Must have** — Website Look & Design, ₹5,000, always ticked.
 3. **B. Recommended extras** — Logo & colours ₹5,000, writing ₹3,000, Google Maps ₹2,000, with an
    "Add all 3" button.
