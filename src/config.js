@@ -20,7 +20,7 @@ export const FORM_SUBMIT_EMAIL =
  * whole checklist already written. Digits only, with country code, e.g. '919812345678'.
  * Leave empty to hide the button.
  */
-export const WHATSAPP_NUMBER = ''
+export const WHATSAPP_NUMBER = '918320936239'
 
 /** Client details shown across the page and in the email. One client, two websites. */
 export const CLIENT = {
