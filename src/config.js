@@ -41,6 +41,8 @@ export const CURRENCY = {
  *            null = not counted; shows `label` instead (e.g. "Quoted separately").
  *   type   — optional: 'from' shows "From ₹4,000" (default: fixed price)
  *   label  — text shown when there is no amount
+ *   usual  — optional: what we usually charge. Never shown next to the service; the total shows
+ *            the difference as "Already Reduced"
  *   rates  — optional per-unit rates listed under the service
  *
  * "Price after a talk" items (those with a `level`) without an entry are quoted separately.
@@ -48,16 +50,18 @@ export const CURRENCY = {
 export const PRICING = {
   // Core website development, per website (always included, not a checkbox):
   // all listed pages, basic features, technical setup, launch, 3 months support.
-  school_core: { amount: 30000 },
-  tuition_core: { amount: 30000 },
+  // `usual` is what we usually charge: ₹40,000, so ₹10,000 is reduced on each website (₹20,000 for both).
+  school_core: { amount: 30000, usual: 40000 },
+  tuition_core: { amount: 30000, usual: 40000 },
 
   // Website UI/UX Design — required for every website, always counted (not core)
   school_uiux: { amount: 5000 },
   tuition_uiux: { amount: 5000 },
 
-  // Branding & content (per website)
-  school_branding: { amount: 5000 },
-  tuition_branding: { amount: 5000 },
+  // Branding & content (per website). A general design agency usually charges ₹15,000+ for
+  // logo & brand identity, so ₹10,000 is reduced on each website that ticks it.
+  school_branding: { amount: 5000, usual: 15000 },
+  tuition_branding: { amount: 5000, usual: 15000 },
   school_contentWriting: { amount: 3000 },
   tuition_contentWriting: { amount: 3000 },
 

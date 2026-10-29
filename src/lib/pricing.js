@@ -58,6 +58,8 @@ export function calculateEstimate(selection, { pricing = PRICING, groups = ALL_G
   const sum = (ls) => ls.reduce((t, l) => t + l.amount, 0)
   const oneTime = priced.filter((l) => l.billing !== 'monthly')
   const monthly = priced.filter((l) => l.billing === 'monthly')
+  // Our usual price minus this price, for every one-time price counted (core included).
+  const reduction = [...cores, ...oneTime.map((l) => pricing[l.groupId])].reduce((t, p) => t + Math.max(0, (p.usual ?? p.amount) - p.amount), 0)
 
   return {
     lines,
@@ -66,8 +68,11 @@ export function calculateEstimate(selection, { pricing = PRICING, groups = ALL_G
     coreAmount,
     addOnsTotal: sum(oneTime),
     oneTimeTotal: coreAmount + sum(oneTime),
+    // How far below our usual price this is — shown in the total, never on a service.
+    reduction,
+    usualTotal: coreAmount + sum(oneTime) + reduction,
     monthlyTotal: sum(monthly),
-    // What Sonder pays for (domain, hosting) across every website — shown crossed out, never charged.
+    // What we pay for (domain, hosting) across every website — shown crossed out, never charged.
     complimentaryValue: COMPLIMENTARY_VALUE * sites.length,
     hasFromPrices: priced.some((l) => l.type === 'from') || cores.some((c) => c.type === 'from'),
   }

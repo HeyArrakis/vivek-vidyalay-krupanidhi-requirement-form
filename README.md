@@ -7,8 +7,9 @@ A simple, single-page **website requirement checklist** prepared by
 2. **Tuition classes website — Krupanidhi English Academy**
 
 Written for a non-technical reader: plain words, icons and big counters instead of long text.
-A blue **Complimentary** banner sits at the top (per website, when both are built: domain and cloud hosting for 3 years, shown as crossed-out ₹2,100 and ₹10,000 / year, plus care & support for
-3 months, for both websites).
+A blue **Complimentary** banner sits at the top (per website, when both are built: domain for 3 years and cloud hosting
+for 1 year, shown as crossed-out ₹2,100 and ₹10,000, plus care & support for 3 months, for both websites).
+Downloading forms and documents is part of the school's core package; event sign-ups stay in section C.
 
 Each website then has, in this order:
 
@@ -20,8 +21,10 @@ Each website then has, in this order:
 4. **C. More features — price after a quick talk** — everything quoted separately, last.
 
 The total bar is always visible: ₹70,000 to start, ₹90,000 with every priced extra on both websites.
-A "Your Total" summary at the end shows the full value crossed out (including ₹64,200 of domain and
-hosting Sonder pays for), then "You Pay".
+A "Your Total" summary at the end starts from our usual price (₹40,000 per core website), shows the full value crossed out
+(including ₹24,200 of domain and hosting we pay for), takes off "Already Reduced for You" (₹10,000 per website, ₹20,000 for both, plus ₹10,000 for each logo &
+brand identity ticked: usually ₹15,000, ₹5,000 here)
+and "We Pay for You", then "You Pay".
 
 ---
 
@@ -84,6 +87,7 @@ export const PRICING = {
 | `amount` | Price in rupees, counted in the estimate when ticked. `null` = not counted. |
 | `label`  | Text shown instead of a price when `amount` is `null` |
 | `type`   | Optional `'from'` to show "From ₹4,000" |
+| `usual`  | Optional: what we usually charge. Never shown on the service; the total shows the difference as "Already Reduced" (core is ₹40,000 usually, ₹30,000 here = ₹10,000 reduced per website) |
 
 The estimate = each website's core + required UI/UX + each ticked priced service: ₹70,000 minimum,
 ₹90,000 with every priced service ticked for both websites. Standard / Advanced / Custom

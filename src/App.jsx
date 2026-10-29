@@ -342,16 +342,16 @@ function WasFree({ item }) {
   )
 }
 
-/** End-of-checklist total: the full value crossed out, what Sonder covers, and the price to pay. */
+/** End-of-checklist total: the full value crossed out, what we've reduced and cover, and the price to pay. */
 function TotalSummary({ estimate }) {
-  const fullValue = estimate.oneTimeTotal + estimate.complimentaryValue
+  const fullValue = estimate.usualTotal + estimate.complimentaryValue
   return (
     <section className="summary" aria-labelledby="summary-title">
       <h2 id="summary-title" className="summary__title">Your Total</h2>
       <dl className="summary__rows">
         <div className="summary__row">
-          <dt>Websites & Extras You Chose</dt>
-          <dd>{formatPrice(estimate.oneTimeTotal)}</dd>
+          <dt>{estimate.reduction > 0 ? 'Websites & Extras You Chose — Our Usual Price' : 'Websites & Extras You Chose'}</dt>
+          <dd>{formatPrice(estimate.usualTotal)}</dd>
         </div>
         {COMPLIMENTARY.filter((c) => c.value).map((c) => (
           <div key={c.name} className="summary__row is-comp">
@@ -365,9 +365,15 @@ function TotalSummary({ estimate }) {
           <dt>Total Value</dt>
           <dd><s>{formatPrice(fullValue)}</s></dd>
         </div>
+        {estimate.reduction > 0 && (
+          <div className="summary__row summary__row--save is-save">
+            <dt>Already Reduced for You</dt>
+            <dd className="nowrap">−&nbsp;{formatPrice(estimate.reduction)}</dd>
+          </div>
+        )}
         <div className="summary__row summary__row--save is-comp">
-          <dt>Sonder Pays for You</dt>
-          <dd>− {formatPrice(estimate.complimentaryValue)}</dd>
+          <dt>We Pay for You</dt>
+          <dd className="nowrap">−&nbsp;{formatPrice(estimate.complimentaryValue)}</dd>
         </div>
         <div className="summary__row summary__row--pay">
           <dt>You Pay</dt>
@@ -384,7 +390,7 @@ function PriceBar({ estimate, count }) {
       <div className="wrap pricebar__inner">
         <div className="pricebar__left">
           <span className="mono pricebar__label">
-            You Pay <s className="pricebar__was">{formatPrice(estimate.oneTimeTotal + estimate.complimentaryValue)}</s>
+            You Pay <s className="pricebar__was">{formatPrice(estimate.usualTotal + estimate.complimentaryValue)}</s>
           </span>
           {/* key re-mounts the number on every change so the update animation replays */}
           <span key={estimate.oneTimeTotal} className="pricebar__amount">

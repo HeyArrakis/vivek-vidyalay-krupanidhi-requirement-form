@@ -32,7 +32,7 @@ export function buildSubmission(values, estimate) {
     const head = `${site.number}. ${site.kind.toUpperCase()} — ${site.name}`
     p[head] = extras ? `${extras} extras ticked` : 'Core + required services only — no extras ticked'
     const core = priceLabel(coreKey(site.id))
-    p[`${site.kind} — ${CORE.title}`] = `Included${core ? ` — ${core}` : ''} (all listed pages, basic features, setup & launch; complimentary: domain for 3 years, cloud hosting for 3 years, care & support for 3 months)`
+    p[`${site.kind} — ${CORE.title}`] = `Included${core ? ` — ${core}` : ''} (all listed pages, basic features, setup & launch; complimentary: domain for 3 years, cloud hosting for 1 year, care & support for 3 months)`
     for (const line of lines) {
       p[`${site.kind} — ${line.name}`] = `${line.required ? 'Required' : 'Yes'}${priceText(line)}`
     }
@@ -43,7 +43,10 @@ export function buildSubmission(values, estimate) {
     p['ESTIMATED INVESTMENT'] = `${estimate.hasFromPrices ? 'From ' : ''}${formatPrice(estimate.oneTimeTotal)}${
       estimate.showCore ? ` (incl. core development ${formatPrice(estimate.coreAmount)} for both websites; “Quoted separately” items not included)` : ''
     }`
-    p['COMPLIMENTARY VALUE'] = `${formatPrice(estimate.complimentaryValue)} paid by Sonder (domain + cloud hosting for 3 years, both websites) — not charged`
+    if (estimate.reduction > 0) {
+      p['ALREADY REDUCED'] = `${formatPrice(estimate.reduction)} below our usual price of ${formatPrice(estimate.usualTotal)}`
+    }
+    p['COMPLIMENTARY VALUE'] = `${formatPrice(estimate.complimentaryValue)} paid by us (domain for 3 years + cloud hosting for 1 year, both websites) — not charged`
     if (estimate.monthlyTotal > 0) p['ESTIMATED INVESTMENT — Monthly'] = `${formatPrice(estimate.monthlyTotal)} / month`
   }
 
