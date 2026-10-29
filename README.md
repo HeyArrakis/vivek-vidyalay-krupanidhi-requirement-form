@@ -22,7 +22,8 @@ Each website then has, in this order:
 
 The total bar is always visible: ₹70,000 to start, ₹90,000 with every priced extra on both websites.
 A "Your Total" summary at the end starts from our usual price (₹40,000 per core website), shows the full value crossed out
-(including ₹24,200 of domain and hosting we pay for), takes off "Already Reduced for You" (₹10,000 per website, ₹20,000 for both)
+(including ₹24,200 of domain and hosting we pay for), takes off "Already Reduced for You" (₹10,000 per website, ₹20,000 for both, plus ₹10,000 for each logo &
+brand identity ticked: usually ₹15,000, ₹5,000 here)
 and "We Pay for You", then "You Pay".
 
 ---

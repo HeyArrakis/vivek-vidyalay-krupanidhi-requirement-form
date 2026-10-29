@@ -10,11 +10,13 @@ describe('complimentary value', () => {
     expect(buildSubmission({}, est)['COMPLIMENTARY VALUE']).toMatch(/^₹24,200 paid by us/)
   })
 
-  it('shows ₹10,000 per website already reduced from our usual ₹40,000', () => {
+  it('shows ₹10,000 per website already reduced from our usual ₹40,000, plus ₹10,000 per logo', () => {
     const est = calculateEstimate({ school_branding: true })
-    expect(est.reduction).toBe(20000)
-    expect(est.usualTotal).toBe(est.oneTimeTotal + 20000)
-    expect(buildSubmission({}, est)['ALREADY REDUCED']).toBe('₹20,000 below our usual price of ₹95,000')
+    expect(calculateEstimate({}).reduction).toBe(20000)
+    // A ticked logo adds its own ₹10,000 reduction (usually ₹15,000, ₹5,000 here).
+    expect(est.reduction).toBe(30000)
+    expect(est.usualTotal).toBe(est.oneTimeTotal + 30000)
+    expect(buildSubmission({}, est)['ALREADY REDUCED']).toBe('₹30,000 below our usual price of ₹1,05,000')
   })
 })
 

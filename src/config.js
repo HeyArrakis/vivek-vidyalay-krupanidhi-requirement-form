@@ -58,9 +58,10 @@ export const PRICING = {
   school_uiux: { amount: 5000 },
   tuition_uiux: { amount: 5000 },
 
-  // Branding & content (per website)
-  school_branding: { amount: 5000 },
-  tuition_branding: { amount: 5000 },
+  // Branding & content (per website). A general design agency usually charges ₹15,000+ for
+  // logo & brand identity, so ₹10,000 is reduced on each website that ticks it.
+  school_branding: { amount: 5000, usual: 15000 },
+  tuition_branding: { amount: 5000, usual: 15000 },
   school_contentWriting: { amount: 3000 },
   tuition_contentWriting: { amount: 3000 },
 
