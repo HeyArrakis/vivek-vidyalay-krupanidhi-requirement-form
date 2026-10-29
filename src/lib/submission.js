@@ -1,6 +1,6 @@
 import { CLIENT, FORM_SUBMIT_EMAIL } from '../config.js'
-import { CORE, SITES } from '../services.js'
-import { formatPrice, pricesConfigured } from './pricing.js'
+import { CORE, SITES, coreKey } from '../services.js'
+import { formatPrice, priceLabel, pricesConfigured } from './pricing.js'
 
 export const FORM_SUBMIT_ACTION = `https://formsubmit.co/${FORM_SUBMIT_EMAIL}`
 const FORM_SUBMIT_AJAX = `https://formsubmit.co/ajax/${FORM_SUBMIT_EMAIL}`
@@ -14,7 +14,7 @@ const priceText = (l) =>
 
 /**
  * Builds the email payload. Keys are inserted in reading order:
- * CLIENT → CORE → per website: its ticked extras, then its notes → ESTIMATED INVESTMENT (only if prices are set)
+ * CLIENT → per website: its core development, ticked services, then its notes → ESTIMATED INVESTMENT (only if prices are set)
  */
 export function buildSubmission(values, estimate) {
   const p = {
@@ -24,7 +24,6 @@ export function buildSubmission(values, estimate) {
 
     CLIENT: CLIENT.name,
     'FILLED BY': orDash(values.name),
-    [`CORE — ${CORE.title}`]: `Included${estimate.showCore ? ` — ${formatPrice(estimate.coreAmount)}` : ''} (both websites: all listed pages, basic features, technical setup, launch, 3 months support)`,
   }
 
   for (const site of SITES) {
@@ -32,6 +31,8 @@ export function buildSubmission(values, estimate) {
     const extras = lines.filter((l) => !l.required).length
     const head = `${site.number}. ${site.kind.toUpperCase()} — ${site.name}`
     p[head] = extras ? `${extras} extras ticked` : 'Core + required services only — no extras ticked'
+    const core = priceLabel(coreKey(site.id))
+    p[`${site.kind} — ${CORE.title}`] = `Included${core ? ` — ${core}` : ''} (all listed pages, basic features, technical setup, launch, 3 months support)`
     for (const line of lines) {
       p[`${site.kind} — ${line.name}`] = `${line.required ? 'Required' : 'Yes'}${priceText(line)}`
     }
@@ -40,7 +41,7 @@ export function buildSubmission(values, estimate) {
 
   if (pricesConfigured()) {
     p['ESTIMATED INVESTMENT'] = `${estimate.hasFromPrices ? 'From ' : ''}${formatPrice(estimate.oneTimeTotal)}${
-      estimate.showCore ? ` (incl. core development ${formatPrice(estimate.coreAmount)}; “Quoted separately” items not included)` : ''
+      estimate.showCore ? ` (incl. core development ${formatPrice(estimate.coreAmount)} for both websites; “Quoted separately” items not included)` : ''
     }`
     if (estimate.monthlyTotal > 0) p['ESTIMATED INVESTMENT — Monthly'] = `${formatPrice(estimate.monthlyTotal)} / month`
   }

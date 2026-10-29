@@ -336,15 +336,14 @@ export const SITES = [
   },
 ]
 
-/** Core website development — one price for both websites. Shown as an expandable list. */
+/** Core website development — one price per website, shown in each website's section. */
 export const CORE = {
   title: 'Core Website Development',
-  subtitle: 'Both websites: Vivek Vidyalay and Krupanidhi English Academy',
-  summary:
-    'Everything below is included in this price — all listed website pages, the basic features and the technical setup for both websites. Website UI/UX Design is a separate, required service for each website (see section B).',
-  design: [{ name: 'Mobile-friendly build', description: 'Works on phones, tablets and desktops' }],
+  summary: (site) =>
+    `Everything below is included in this price for the ${site.name} website — all listed pages, the basic features, the technical setup and launch. Website UI/UX Design is a separate, required service (see section B).`,
   technical: [
-    { name: 'Admin panel', description: 'Your staff update notices, photos and pages themselves' },
+    { name: 'Mobile-friendly build', description: 'Works on phones, tablets and desktops' },
+    { name: 'Admin panel', description: 'Your staff update content and pages themselves' },
     { name: 'Secure HTTPS', description: 'SSL certificate and basic security' },
     { name: 'Contact & enquiry forms', description: 'With call, email and WhatsApp buttons and Google Maps' },
     { name: 'Basic SEO & speed optimisation', description: 'Page titles, descriptions and fast loading' },
@@ -353,13 +352,14 @@ export const CORE = {
   ],
 }
 
-/** Groups shown in the core dropdown, in reading order. */
-export const coreSections = () => [
-  ...SITES.flatMap((site) => [
-    { title: `${site.name} — website pages (${site.pages.length})`, items: site.pages, notes: site.pageNotes },
-    { title: `${site.name} — basic features`, items: site.basic },
-  ]),
-  { title: 'Build, technical, launch & support — both websites', items: [...CORE.design, ...CORE.technical] },
+/** PRICING key of a website's core development price, e.g. "school_core". */
+export const coreKey = (siteId) => `${siteId}_core`
+
+/** Groups shown in a website's core dropdown, in reading order. */
+export const coreSections = (site) => [
+  { title: `Website pages (${site.pages.length})`, items: site.pages, notes: site.pageNotes },
+  { title: `Basic features (${site.basic.length})`, items: site.basic },
+  { title: 'Build, technical, launch & support', items: CORE.technical },
 ]
 
 /** Every selectable service of one website, in page order. */

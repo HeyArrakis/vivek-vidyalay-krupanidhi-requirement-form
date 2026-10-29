@@ -6,13 +6,13 @@ A simple, single-page **website requirement checklist** prepared by
 1. **School website — Vivek Vidyalay**
 2. **Tuition classes website — Krupanidhi English Academy**
 
-At the top, **Core Website Development (₹85,000, both websites)** has a "See everything included"
-dropdown: UI/UX design, every listed page and the basic features of each website, plus technical
-setup, launch and 3 months of support.
+Each website starts with its own **Core Website Development (₹30,000)** block and a "See everything
+included" dropdown: that website's pages, its basic features, technical setup, launch and 3 months
+of support.
 
-Below it, each website has: **A** Features & Modules (Basic included in core; Standard, Advanced
+Below the core block, each website has: **A** Features & Modules (Basic included in core; Standard, Advanced
 and Custom bundles quoted separately), **B** Branding, Design & Content (UI/UX always included),
-**B** also holds the required Website UI/UX Design (₹5,000 per website, always counted). **C** Online Growth, **D** After Launch. The client ticks any extras, optionally adds a note per
+**B** holds the required Website UI/UX Design (₹5,000 per website, always counted). **C** Online Growth, **D** After Launch. The client ticks any extras, optionally adds a note per
 website, and submits.
 
 ---
@@ -56,10 +56,11 @@ in the page source.
 
 ```js
 export const PRICING = {
-  coreWebsite: { amount: 85000 },                       // both websites
-  school_branding: { amount: 3000 },                    // per website
-  school_contentWriting: { amount: null, label: '₹200 / section' },
-  school_localSEO: { amount: 1000 },
+  school_core: { amount: 30000 },                       // core development, per website
+  school_uiux: { amount: 5000 },                        // required, always counted
+  school_branding: { amount: 5000 },
+  school_contentWriting: { amount: 3000 },
+  school_localSEO: { amount: 2000 },
   school_advancedSEO: { amount: null, label: 'Priced on your goals' },
   school_supportAfter3Months: { amount: null, label: 'Quoted separately' },
   // …same keys with the tuition_ prefix
@@ -72,7 +73,8 @@ export const PRICING = {
 | `label`  | Text shown instead of a price when `amount` is `null` |
 | `type`   | Optional `'from'` to show "From ₹4,000" |
 
-The estimate = core development + each ticked priced service. Standard / Advanced / Custom
+The estimate = each website's core + required UI/UX + each ticked priced service: ₹70,000 minimum,
+₹90,000 with every priced service ticked for both websites. Standard / Advanced / Custom
 feature bundles have no entry, so they show under a "Quoted separately" heading and are not
 counted; give one an `amount` to price it. `src/lib/pricing.test.js` and
 `src/lib/submission.test.js` cover this.

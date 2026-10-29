@@ -39,23 +39,24 @@ export const CURRENCY = {
  * Standard / Advanced / Custom feature bundles without an entry show "Quoted separately".
  */
 export const PRICING = {
-  // Core website development for BOTH websites (always included, not a checkbox):
+  // Core website development, per website (always included, not a checkbox):
   // all listed pages, basic features, technical setup, launch, 3 months support.
-  coreWebsite: { amount: 85000 },
+  school_core: { amount: 30000 },
+  tuition_core: { amount: 30000 },
 
   // Website UI/UX Design — required for every website, always counted (not core)
   school_uiux: { amount: 5000 },
   tuition_uiux: { amount: 5000 },
 
   // Branding & content (per website)
-  school_branding: { amount: 3000 },
-  tuition_branding: { amount: 3000 },
-  school_contentWriting: { amount: null, label: '₹200 / section' },
-  tuition_contentWriting: { amount: null, label: '₹200 / section' },
+  school_branding: { amount: 5000 },
+  tuition_branding: { amount: 5000 },
+  school_contentWriting: { amount: 3000 },
+  tuition_contentWriting: { amount: 3000 },
 
   // Online growth (per website)
-  school_localSEO: { amount: 1000 },
-  tuition_localSEO: { amount: 1000 },
+  school_localSEO: { amount: 2000 },
+  tuition_localSEO: { amount: 2000 },
   school_advancedSEO: { amount: null, label: 'Priced on your goals' },
   tuition_advancedSEO: { amount: null, label: 'Priced on your goals' },
 

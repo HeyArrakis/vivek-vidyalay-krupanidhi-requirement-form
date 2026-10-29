@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { CLIENT } from './config.js'
-import { CORE, LEVELS, SITES, coreSections } from './services.js'
+import { CORE, LEVELS, SITES, coreKey, coreSections } from './services.js'
 import { calculateEstimate, formatPrice, priceLabel, pricesConfigured } from './lib/pricing.js'
 import { FORM_SUBMIT_ACTION, buildSubmission, sendSubmission } from './lib/submission.js'
 import ChecklistGroup from './components/Checklist.jsx'
@@ -69,9 +69,9 @@ export default function App() {
           <p className="mono muted">{CLIENT.name} × Sonder</p>
           <h1 className="intro__title">Website requirement checklist</h1>
           <p className="intro__copy">
-            Core development covers both websites. Below it, tick any extra features or services you’d like for each website.
+            One checklist for both of your websites. Each website shows its core development and what it includes — then tick any
+            extra features or services you’d like.
           </p>
-          <CorePackage />
           <nav className="sites" aria-label="Websites in this checklist">
             {SITES.map((site) => (
               <a key={site.id} className="sites__card" href={`#site-${site.id}`}>
@@ -97,10 +97,7 @@ export default function App() {
                   <p className="site__objective">{site.objective}</p>
                 </div>
               </div>
-              <p className="site__core">
-                <CheckMark /> {site.pages.length} website pages and {site.basic.length} basic features are included in core development.
-                Website UI/UX Design is required and priced separately in section B.
-              </p>
+              <CorePackage site={site} />
 
               {site.sections.map((sec) => (
                 <section key={sec.id} className="group" aria-labelledby={`grp-${sec.id}`}>
@@ -211,26 +208,27 @@ export default function App() {
   )
 }
 
-/** The core package: price up front, everything it covers in an expandable list. */
-function CorePackage() {
+/** A website's core package: price up front, everything it covers in an expandable list. */
+function CorePackage({ site }) {
+  const price = priceLabel(coreKey(site.id))
   return (
     <div className="core">
       <div className="core__head">
         <div>
           <p className="mono core__kicker">Included</p>
-          <h2 className="core__title">{CORE.title}</h2>
-          <p className="core__subtitle">{CORE.subtitle}</p>
+          <h3 className="core__title">{CORE.title}</h3>
+          <p className="core__subtitle">{site.name}</p>
         </div>
-        {priceLabel('coreWebsite') && <p className="core__price">{priceLabel('coreWebsite')}</p>}
+        {price && <p className="core__price">{price}</p>}
       </div>
-      <p className="core__summary">{CORE.summary}</p>
+      <p className="core__summary">{CORE.summary(site)}</p>
       <details className="core__details">
         <summary className="core__toggle mono">
           <span className="core__toggle-open">See everything included</span>
           <span className="core__toggle-close">Hide the list</span>
         </summary>
         <div className="core__body">
-          {coreSections().map((sec) => (
+          {coreSections(site).map((sec) => (
             <div key={sec.title} className="core__section">
               <p className="core__section-title mono">{sec.title}</p>
               <ul className="core__list">
@@ -342,7 +340,6 @@ function Success({ estimate, delivery, error, onRetry }) {
         <div className="success__mark" aria-hidden="true"><CheckMark /></div>
         <h1 className="intro__title" tabIndex={-1} ref={titleRef}>Thank you. We’ve received your requirements.</h1>
         <p className="intro__copy">Our team will review your selections and get back to you with the final scope and proposal.</p>
-        <p className="success__core"><CheckMark /> {CORE.title} — both websites</p>
         {SITES.map((site) => {
           const lines = estimate.lines.filter((l) => l.siteId === site.id)
           if (!lines.length) return null
@@ -350,6 +347,7 @@ function Success({ estimate, delivery, error, onRetry }) {
             <div key={site.id} className="success__site">
               <p className="mono muted">{site.number}. {site.kind} — {site.name}</p>
               <ul className="success__list">
+                <li><CheckMark /> {CORE.title}</li>
                 {lines.map((l) => (
                   <li key={l.groupId}><CheckMark /> {l.name}</li>
                 ))}

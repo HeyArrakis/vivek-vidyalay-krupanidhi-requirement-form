@@ -5,9 +5,9 @@ import { calculateEstimate } from './pricing.js'
 describe('email payload', () => {
   it('always counts UI/UX design for both websites, even with nothing ticked', () => {
     const est = calculateEstimate({})
-    expect(est.oneTimeTotal).toBe(85000 + 5000 + 5000)
+    expect(est.oneTimeTotal).toBe(30000 + 30000 + 5000 + 5000)
     expect(est.extras).toHaveLength(0)
-    expect(calculateEstimate({ school_uiux: false }).oneTimeTotal).toBe(95000)
+    expect(calculateEstimate({ school_uiux: false }).oneTimeTotal).toBe(70000)
   })
 
   it('lists core first, then each website’s extras and notes', () => {
@@ -15,20 +15,21 @@ describe('email payload', () => {
     const p = buildSubmission({ name: 'Asha Mehta', notes: { tuition: 'Two branches' } }, est)
     expect(p.CLIENT).toBe('Vivek Vidyalay & Krupanidhi English Academy')
     expect(p['FILLED BY']).toBe('Asha Mehta')
-    expect(p['CORE — Core Website Development']).toMatch(/^Included — ₹85,000/)
+    expect(p['School Website — Core Website Development']).toMatch(/^Included — ₹30,000/)
+    expect(p['Tuition Classes Website — Core Website Development']).toMatch(/^Included — ₹30,000/)
     expect(p['1. SCHOOL WEBSITE — Vivek Vidyalay']).toBe('2 extras ticked')
     expect(p['School Website — Website UI/UX Design']).toBe('Required — ₹5,000')
     expect(p['Tuition Classes Website — Website UI/UX Design']).toBe('Required — ₹5,000')
-    expect(p['School Website — Logo & Brand Identity']).toBe('Yes — ₹3,000')
+    expect(p['School Website — Logo & Brand Identity']).toBe('Yes — ₹5,000')
     expect(p['School Website — Student, Parent & Teacher Portals']).toBe('Yes — Quoted separately')
-    expect(p['Tuition Classes Website — Local SEO & Google Business Profile']).toBe('Yes — ₹1,000')
+    expect(p['Tuition Classes Website — Local SEO & Google Business Profile']).toBe('Yes — ₹2,000')
     expect(p['NOTES — School Website']).toBe('—')
     expect(p['NOTES — Tuition Classes Website']).toBe('Two branches')
   })
 
-  it('keeps core before the school and the school before the tuition classes', () => {
+  it('keeps each website’s core first and the school before the tuition classes', () => {
     const keys = Object.keys(buildSubmission({}, calculateEstimate({ tuition_branding: true, school_branding: true })))
-    expect(keys.indexOf('CORE — Core Website Development')).toBeLessThan(keys.indexOf('School Website — Logo & Brand Identity'))
+    expect(keys.indexOf('School Website — Core Website Development')).toBeLessThan(keys.indexOf('School Website — Logo & Brand Identity'))
     expect(keys.indexOf('School Website — Logo & Brand Identity')).toBeLessThan(keys.indexOf('Tuition Classes Website — Logo & Brand Identity'))
   })
 
@@ -38,8 +39,15 @@ describe('email payload', () => {
 
   it('totals core plus each ticked priced service', () => {
     const est = calculateEstimate({ school_branding: true, school_localSEO: true, school_contentWriting: true, tuition_learningPortal: true })
-    expect(est.oneTimeTotal).toBe(85000 + 5000 + 5000 + 3000 + 1000)
-    expect(buildSubmission({}, est)['ESTIMATED INVESTMENT']).toMatch(/^₹99,000 \(incl\. core development ₹85,000/)
+    expect(est.oneTimeTotal).toBe(60000 + 10000 + 5000 + 2000 + 3000)
+    expect(buildSubmission({}, est)['ESTIMATED INVESTMENT']).toMatch(/^₹80,000 \(incl\. core development ₹60,000/)
+  })
+
+  it('reaches ₹90,000 with every priced service ticked for both websites', () => {
+    const all = Object.fromEntries(
+      ['school', 'tuition'].flatMap((s) => ['branding', 'contentWriting', 'localSEO', 'advancedSEO', 'supportAfter3Months'].map((k) => [`${s}_${k}`, true])),
+    )
+    expect(calculateEstimate(all).oneTimeTotal).toBe(90000)
   })
 })
 
