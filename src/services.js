@@ -17,7 +17,7 @@
 export const COMPLIMENTARY = [
   {
     name: 'Website Address (Domain) for 3 Years',
-    description: 'For example www.yourschool.com — we register it and pay for it',
+    description: 'For example www.yourschool.in — we register it and pay for it',
     value: 2100,
     valueLabel: '₹2,100 for 3 years',
   },
